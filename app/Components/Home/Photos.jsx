@@ -148,7 +148,7 @@ const Photos = () => {
             {
             photosSample.map((item,index)=>{
                 return(
-            <div  onMouseEnter={() => handleImageHover(index)} onMouseLeave={() => handleImageHover(index)}  className={'relative cursor-pointer'}>
+            <div key={index}  onMouseEnter={() => handleImageHover(index)} onMouseLeave={() => handleImageHover(index)}  className={'relative cursor-pointer'}>
            <img src={item.picUrl} alt="" className={imageHoverStates[index] ? 'hovered':''}/>
            {
             imageHoverStates[index] && <div className='absolute left-0 top-0 w-full h-full bg-black/40'>

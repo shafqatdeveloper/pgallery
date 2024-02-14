@@ -43,7 +43,7 @@ const HomePage = () => {
         </div>
       </div>
     {/* Pages */}
-    <div className="w-full overflow-auto">
+    <div className="w-full">
       <SinglePage/>
     </div>
     {/* Phtots Section With Search Filters */}

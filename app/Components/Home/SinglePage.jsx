@@ -22,19 +22,20 @@ const media = [
 
 const SinglePage = () => {
     const pathName = usePathname()
-    console.log(pathName)
   return (
-    <div className='w-full py-10 flex items-center gap-10 justify-center'>
+    <div className='py-10 w-full overflow-auto'>
+        <div className='flex w-full items-center gap-10 overflow-x-auto justify-center'>
         {
             media.map((item,index)=>{
                 return(
-                    <Link key={index} className={item.linkUrl===pathName?'flex items-center gap-1 bg-gray-200 rounded-full px-3 py-2.5':'flex items-center gap-1'} href={item.linkUrl}>
+                    <Link key={index} className={item.linkUrl===pathName?'flex w-max overflow-x-auto items-center gap-1 bg-gray-200 rounded-full px-3 py-2.5':'flex w-max items-center gap-1'} href={item.linkUrl}>
                     <span className={item.linkUrl===pathName ? 'text-[#00AB6B]':""}>{item.icon}</span>
-                    <span className='capitalize text-sm'>{item.title}</span>
+                    <span className='capitalize text-sm w-max'>{item.title}</span>
                     </Link>
                 )
             })
         }
+        </div>
     </div>
   )
 }

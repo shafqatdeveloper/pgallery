@@ -43,14 +43,14 @@ const Photos = () => {
 
 
   return (
-    <div className='w-full'>
-        <div className='px-2 sm:px-8 flex items-center justify-between'>
+    <div className='w-full overflow-auto'>
+        <div className='px-2 sm:px-8 flex items-center justify-between overflow-x-auto'>
             {/* Search Categories */}
             <div className='flex items-center gap-2'>
                 {
                     famousSearches.map((item,index)=>{
                         return(
-                            <Link className='border-[1px] border-gray-300 text-gray-600 text-normal rounded-[8px] px-2 py-0.5' key={index} href={item.linkUrl}>
+                            <Link className='border-[1px] border-gray-300 w-max text-gray-600 text-normal rounded-[8px] px-2 py-0.5' key={index} href={item.linkUrl}>
                             {item.title}
                             </Link>
                         )
@@ -62,6 +62,7 @@ const Photos = () => {
                 {/* Search Setting */}
                 <div onClick={()=>setsearchSettingOpened(!searchSettingOpened)} className='relative cursor-pointer'>
                     <IoMdSettings/>
+                    {/* Opened Search Settings Tab */}
                     {
                         searchSettingOpened && <div className='absolute right-0 top-8 w-52 flex flex-col py-2 text-gray-500 capitalize bg-white shadow-md shadow-gray-500 rounded-md px-2'>
                         {
@@ -84,13 +85,14 @@ const Photos = () => {
                 </div>
                 {/* Search Options */}
                 <div className='relative'>
-                    <div onClick={()=>setSearchOptionOpened(!searchOptionOpened)} className='flex capitalize items-center gap-1 border-[1px] border-gray-400 cursor-pointer text-gray-600 rounded-[8px] px-2 py-0.5'>
+                    <div onClick={()=>setSearchOptionOpened(!searchOptionOpened)} className='flex capitalize items-center gap-1 w-max border-[1px] border-gray-400 cursor-pointer text-gray-600 rounded-[8px] px-2 py-0.5'>
                     <span>{searchOption}</span>
                     <span>{<MdKeyboardArrowDown size={17}/>}</span>
                     </div>
+                    {/* Opened Search Options Tab */}
                     {
                         searchOptionOpened &&
-                    <div className='absolute right-0 top-8 w-44 flex flex-col py-2 text-gray-500 capitalize bg-white shadow-md shadow-gray-500 rounded-md px-2'>
+                    <div className='absolute right-0 top-8 w-96 flex flex-col py-2 text-gray-500 capitalize bg-white shadow-md shadow-gray-500 rounded-md px-2'>
                     { 
                         searchOptions.map((item,index)=>{
                             return(

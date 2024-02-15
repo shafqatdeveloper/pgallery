@@ -16,6 +16,7 @@ const HomePage = () => {
   return (
     <>
     {/* Navbar */}
+    <Navbar/>
       {/* <Navbar /> */}
     {/* Hero Section */}
       <div className="w-full relative h-[67vh]">

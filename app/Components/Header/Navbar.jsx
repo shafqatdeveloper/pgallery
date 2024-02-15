@@ -63,6 +63,7 @@ const Navbar = () => {
 const [isScrolling, setIsScrolling] = useState(false);
 const [searchDropDown, setSearchDropDown] = useState(false)
 const [searchItem, setSearchItem] = useState(searchTags[0].linkUrl)
+const [mobileSearchBarOpened, setMobileSearchBarOpened] = useState(false)
 const [isNavOpen, setisNavOpen] = useState(false)
 
 
@@ -74,13 +75,62 @@ useEffect(() => {
   const [dropDownOpened, setdropDownOpened] = useState(false);
   return (
     <div className={isScrolling ? "w-full fixed z-10 bg-white text-black top-0 left-0" : "w-full fixed text-white z-10 top-0 left-0"}>
-      <div className="w-full z-10 py-3 gap-5 flex items-center justify-between">
-        <div className="pl-2 md:pl-8">
+      <div className="w-full z-10 py-2 gap-5 flex items-center justify-between">
+        <div className="pl-2 w-full flex items-center gap-2.5 md:w-min md:pl-8">
           <h1>Pixabay</h1>
+          {/* Mobile SearchBar Code Start */}
+          {
+            isScrolling && <div onClick={()=>setMobileSearchBarOpened(true)} className="cursor-pointer hover:bg-white/20 p-2 hover:rounded-full md:hidden" >
+            <CiSearch size={19}/>
+          </div>
+          }
+         {
+          mobileSearchBarOpened &&  <div className={mobileSearchBarOpened ? 'w-full py-2 md:hidden text-black bg-white z-50 fixed top-0 left-0 transition-all duration-500' : 'w-full py-4 text-black bg-white z-50 fixed top-[-100%] left-0 transition-all duration-500'}>
+          <div className="w-full flex items-center px-4 gap-4 justify-between">
+          <div className="w-full md:hidden bg-gray-100 flex rounded-full px-1 items-center gap-1">
+              <CiSearch size={26} className="font-bold"/>
+              <input type="text" placeholder="Search Pixabay" className="bg-transparent py-2 px-2 w-full outline-none focus:outline-none rounded-full" />
+              <div className={`relative flex items-center gap-0.5 cursor-pointer hover:bg-white/50 px-3 py-1.5 rounded-full`}>
+                <h1 className="flex items-center w-max gap-0 capitalize text-sm" onClick={()=>setSearchDropDown(!searchDropDown)}>{searchItem} <MdKeyboardArrowDown size={21}/> </h1>
+               {
+                searchDropDown &&  <div className="absolute w-max top-11 z-10 right-0 text-gray-600  bg-white py-1 shadow-md shadow-[#484848] rounded-lg">
+                {
+                  searchTags.map((item,index)=>{
+                    return(
+                      <li  onClick={()=>{
+                        setSearchItem(item.linkUrl)
+                        setSearchDropDown(false)
+                      }} key={index} className="flex px-4 py-2 hover:bg-gray-300 items-center gap-2">
+                        <span>{item.icon}</span>
+                        <span>{item.linkUrl}</span>
+                      </li>
+                    )
+                  })
+                }
+              </div>
+               }
+              </div>
+          </div>
+          <div onClick={()=>setMobileSearchBarOpened(false)} className="cursor-pointer hover:bg-black/20 p-2 hover:rounded-full" >
+            <AiOutlineClose/>
+          </div>
+          </div>
         </div>
+         }
+          {/* Mobile SearchBar Code Ends */}
+        </div>
+        {/* Mobile Account Options */}
+        <div className="md:hidden flex items-center gap-3 pr-2">
+        <div className="flex items-center gap-5">
+            <button>Login</button>
+            <button className={`flex ${isScrolling ? 'bg-black/10' : 'bg-white/20'} items-center gap-1 px-3 py-1.5 rounded-full`}>
+              Join
+            </button>
         {/* Mobile Navbar Icon */}
-        <div onClick={()=>setisNavOpen(true)} className="md:hidden pr-2">
-        <AiOutlineMenu/>
+       <div onClick={()=>setisNavOpen(true)} className="cursor-pointer hover:bg-white/20 p-3 hover:rounded-full">
+       <AiOutlineMenu />
+       </div>
+          </div>
         </div>
         {/* Desktop Navbar Code Start */}
         {
@@ -109,7 +159,7 @@ useEffect(() => {
                 </div>
             </div>
         }
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-8 pr-3 sm:pr-8">
           <div
             onClick={() => setdropDownOpened(!dropDownOpened)}
             className={dropDownOpened ? `relative z-10 w-24 flex items-center gap-0.5 cursor-pointer bg-black/20 hover:bg-black/20 px-3 py-1.5 rounded-full` : `relative w-24 flex items-center gap-0.5 cursor-pointer hover:bg-white/50 px-3 py-1.5 rounded-full`}
@@ -197,8 +247,11 @@ useEffect(() => {
         <div className="pl-2 pt-2 md:pl-8">
           <h1 className="text-xl font-bold">Pixabay</h1>
         </div>
-            <AiOutlineClose className="text-black absolute top-4 right-2" onClick={()=>setisNavOpen(false)} />
+           <div onClick={()=>setisNavOpen(false)}  className="text-black absolute top-4 p-2 right-2 cursor-pointer hover:bg-black/10 hover:rounded-full md:hidden">
+           <AiOutlineClose className="" />
+           </div>
         </div>
+
       </div>
     </div>
   );

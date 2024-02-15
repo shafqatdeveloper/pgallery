@@ -1,6 +1,6 @@
 "use client"
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { IoMdSettings } from "react-icons/io";
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import { BsQuestionCircle,BsFillHeartFill } from "react-icons/bs";
@@ -67,17 +67,21 @@ const Photos = () => {
     const [imageHoverStates, setImageHoverStates] = useState(Array(photosSample.length).fill(false));
 
     const handleImageHover = (index) => {
-    const updatedStates = [...imageHoverStates];
-    updatedStates[index] = !updatedStates[index];
-    setImageHoverStates(updatedStates);
-    };
+        setImageHoverStates(() => Array(photosSample.length).fill(false));
+        setImageHoverStates((prevStates) =>
+          prevStates.map((state, i) => (i === index ? !state : state))
+        );
+      };
 
 
+      const likeImage = (index)=>{
+        console.log(index)
+      }
 
   return (
-    <div className='w-full'>
+    <div className='w-full px-5 sm:px-8 py-4 pb-10 sm:py-8'>
         {/* Photos Filters */}
-        <div className='px-2 sm:px-8 flex items-center justify-between '>
+        <div className=' flex items-center  justify-between '>
             {/* Search Categories */}
             <div className='flex items-center w-max gap-2 overflow-x-auto pr-2'>
                 {
@@ -144,11 +148,12 @@ const Photos = () => {
             </div>
         </div>
         {/* Photos */}
-        <div className='columns-1 sm:columns-2 md:columns-3 lg:columns-4 space-y-5 px-5 sm:px-8 py-4 sm:py-8'>
+        <div className='columns-1 sm:columns-2 border-b-[1px] border-b-gray-300 md:columns-3 lg:columns-4 space-y-5 py-4 sm:py-8'>
             {
             photosSample.map((item,index)=>{
                 return(
-            <div key={index}  onMouseEnter={() => handleImageHover(index)} onMouseLeave={() => handleImageHover(index)}  className={'relative cursor-pointer'}>
+            <div key={index}  onMouseEnter={() => handleImageHover(index)} onMouseLeave={() => setImageHoverStates(Array(photosSample.length).fill(false))}
+            className={'relative cursor-pointer'}>
            <img src={item.picUrl} alt="" className={imageHoverStates[index] ? 'hovered':''}/>
            {
             imageHoverStates[index] && <div className='absolute left-0 top-0 w-full h-full bg-black/40'>
@@ -161,7 +166,7 @@ const Photos = () => {
                 <span className='bg-white/40 p-1 rounded-md border-[1.5px] border-gray-300 cursor-pointer hover:border-white'>
                 <IoBookmark size={18} />
                 </span>
-                <span className='bg-white/40 p-1 rounded-md border-[1.5px] border-gray-300 cursor-pointer hover:border-white'>
+                <span onClick={()=>likeImage(index)} className='bg-white/40 p-1 rounded-md border-[1.5px] border-gray-300 cursor-pointer hover:border-white'>
                 <BsFillHeartFill size={18} />
                 </span>
             </div>
@@ -169,7 +174,7 @@ const Photos = () => {
                <SlBadge size={21}/>
             </div>
             <div className='absolute flex gap-2 text-sm text-gray-300 items-center left-5 bottom-5'>
-                <Link href={'/'}>
+                <Link  href={'/'}>
                     heart
                 </Link>
                 <Link href={'/'}>

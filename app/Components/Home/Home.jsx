@@ -6,6 +6,7 @@ import Link from "next/link";
 import './Home.css'
 import SinglePage from "./SinglePage";
 import Photos from "./Photos";
+import UsagePermission from "./UsagePermission";
 
 
 
@@ -15,7 +16,7 @@ const HomePage = () => {
   return (
     <>
     {/* Navbar */}
-      <Navbar />
+      {/* <Navbar /> */}
     {/* Hero Section */}
       <div className="w-full relative h-[67vh]">
         <div className="absolute -z-10 top-0 left-0 h-full w-full">
@@ -47,8 +48,12 @@ const HomePage = () => {
       <SinglePage/>
     </div>
     {/* Phtots Section With Search Filters */}
-    <div className="mb-64">
+    <div>
       <Photos/>
+    </div>
+    {/* Usage Permissions */}
+    <div className="px-2 sm:px-5 py-5">
+      <UsagePermission/>
     </div>
     </>
   );

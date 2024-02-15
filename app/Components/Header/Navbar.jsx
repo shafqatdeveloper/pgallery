@@ -7,6 +7,7 @@ import { IoIosBrush,IoIosMusicalNotes } from "react-icons/io";
 import { BsVectorPen,BsSoundwave } from "react-icons/bs";
 import { IoVideocam,IoFlame } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
+import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 
 
 
@@ -62,6 +63,7 @@ const Navbar = () => {
 const [isScrolling, setIsScrolling] = useState(false);
 const [searchDropDown, setSearchDropDown] = useState(false)
 const [searchItem, setSearchItem] = useState(searchTags[0].linkUrl)
+const [isNavOpen, setisNavOpen] = useState(false)
 
 
 useEffect(() => {
@@ -72,10 +74,15 @@ useEffect(() => {
   const [dropDownOpened, setdropDownOpened] = useState(false);
   return (
     <div className={isScrolling ? "w-full fixed z-10 bg-white text-black top-0 left-0" : "w-full fixed text-white z-10 top-0 left-0"}>
-      <div className="w-full z-10 px-2 md:px-8 py-3 gap-5 flex items-center justify-between">
-        <div>
+      <div className="w-full z-10 py-3 gap-5 flex items-center justify-between">
+        <div className="pl-2 md:pl-8">
           <h1>Pixabay</h1>
         </div>
+        {/* Mobile Navbar Icon */}
+        <div onClick={()=>setisNavOpen(true)} className="md:hidden pr-2">
+        <AiOutlineMenu/>
+        </div>
+        {/* Desktop Navbar Code Start */}
         {
             isScrolling && <div className="w-full hidden bg-gray-200 md:flex rounded-full px-2 items-center gap-1">
                 <CiSearch size={21} className="font-bold"/>
@@ -182,6 +189,15 @@ useEffect(() => {
               Upload
             </button>
           </div>
+        </div>
+        {/* Desktop Navbar Code Ends */}
+
+        {/* Mobile Navbar Code Starts */}
+        <div className={isNavOpen ? "w-full h-screen text-black bg-white fixed top-0 left-0 transition-all duration-700" : "w-full transition-all duration-700 h-screen top-[-100%] bg-white fixed"}>
+        <div className="pl-2 pt-2 md:pl-8">
+          <h1 className="text-xl font-bold">Pixabay</h1>
+        </div>
+            <AiOutlineClose className="text-black absolute top-4 right-2" onClick={()=>setisNavOpen(false)} />
         </div>
       </div>
     </div>

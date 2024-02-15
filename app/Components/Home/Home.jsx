@@ -1,6 +1,5 @@
 "use client"
 import React, { useState } from "react";
-import Navbar from "../Header/Navbar";
 import Search from "./Search";
 import Link from "next/link";
 import './Home.css'
@@ -15,9 +14,6 @@ const HomePage = () => {
 
   return (
     <>
-    {/* Navbar */}
-    <Navbar/>
-      {/* <Navbar /> */}
     {/* Hero Section */}
       <div className="w-full relative h-[67vh]">
         <div className="absolute -z-10 top-0 left-0 h-full w-full">

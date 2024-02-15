@@ -131,7 +131,7 @@ const Photos = () => {
                     {/* Opened Search Options Tab */}
                     {
                         searchOptionOpened &&
-                    <div className='absolute right-0 top-8 w-96 flex flex-col py-2 z-20 text-gray-500 capitalize bg-white shadow-md shadow-gray-500 rounded-md px-2'>
+                    <div className='absolute right-0 top-8 w-48 sm:w-80 flex flex-col py-2 z-20 text-gray-500 capitalize bg-white shadow-md shadow-gray-500 rounded-md px-2'>
                     { 
                         searchOptions.map((item,index)=>{
                             return(

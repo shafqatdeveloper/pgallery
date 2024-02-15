@@ -74,7 +74,7 @@ useEffect(() => {
 });
   const [dropDownOpened, setdropDownOpened] = useState(false);
   return (
-    <div className={isScrolling ? "w-full fixed z-10 bg-white text-black top-0 left-0" : "w-full fixed text-white z-10 top-0 left-0"}>
+    <div className={"w-full fixed text-white z-10 top-0 left-0"}>
       <div className="w-full z-10 py-2 gap-5 flex items-center justify-between">
         <div className="pl-2 w-full flex items-center gap-2.5 md:w-min md:pl-8">
           <h1>Pixabay</h1>

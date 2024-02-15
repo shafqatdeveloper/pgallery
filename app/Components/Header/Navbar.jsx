@@ -244,7 +244,7 @@ useEffect(() => {
 
       </div>
         {/* Mobile Navbar Code Starts */}
-        <div className={isNavOpen ? "w-full z-30 text-black bg-white fixed top-0 left-0 transition-all duration-700" : "w-full transition-all duration-700 z-30 top-[-100%] bg-white fixed"}>
+        <div className={isNavOpen ? "w-full z-30 h-screen text-black bg-white fixed top-0 left-0 transition-all duration-700" : "w-full transition-all duration-700 z-30 h-screen top-[-100%] bg-white fixed"}>
         <div className="pl-2 pt-2 md:pl-8">
           <h1 className="text-xl font-bold">Pixabay</h1>
         </div>

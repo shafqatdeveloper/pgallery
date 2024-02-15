@@ -242,16 +242,16 @@ useEffect(() => {
         </div>
         {/* Desktop Navbar Code Ends */}
 
+      </div>
         {/* Mobile Navbar Code Starts */}
-        {/* <div className={isNavOpen ? "w-full h-screen text-black bg-white fixed top-0 left-0 transition-all duration-700" : "w-full transition-all duration-700 h-screen top-[-100%] bg-white fixed"}>
+        <div className={isNavOpen ? "w-full h-screen text-black bg-white fixed top-0 left-0 transition-all duration-700" : "w-full transition-all duration-700 h-screen top-[-100%] bg-white fixed"}>
         <div className="pl-2 pt-2 md:pl-8">
           <h1 className="text-xl font-bold">Pixabay</h1>
         </div>
            <div onClick={()=>setisNavOpen(false)}  className="text-black absolute top-4 p-2 right-2 cursor-pointer hover:bg-black/10 hover:rounded-full md:hidden">
            <AiOutlineClose className="" />
            </div>
-        </div> */}
-      </div>
+        </div>
     </div>
   );
 };

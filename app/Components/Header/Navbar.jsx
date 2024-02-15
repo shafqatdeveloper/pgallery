@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { MdKeyboardArrowDown, MdOutlineLanguage } from "react-icons/md";
 import { GrFormUpload } from "react-icons/gr";
-import { FaCamera,FaUserAlt } from 'react-icons/fa'
+import { FaCamera,FaFacebook,FaInstagram,FaPinterest,FaTwitter,FaUserAlt } from 'react-icons/fa'
 import { IoIosBrush,IoIosMusicalNotes } from "react-icons/io";
 import { BsVectorPen,BsSoundwave } from "react-icons/bs";
 import { IoVideocam,IoFlame } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
+import Link from "next/link";
 
 
 
@@ -63,6 +64,10 @@ const Navbar = () => {
 const [isScrolling, setIsScrolling] = useState(false);
 const [searchDropDown, setSearchDropDown] = useState(false)
 const [searchItem, setSearchItem] = useState(searchTags[0].linkUrl)
+const [mediaLinksOpen, setMediaLinksOpen] = useState(false)
+const [discoverLinksOpen, setDiscoverLinksOpen] = useState(false)
+const [communityLinksOpen, setCommunityLinksOpen] = useState(false)
+const [aboutUsLinksOpen, setAboutUsLinksOpen] = useState(false)
 const [mobileSearchBarOpened, setMobileSearchBarOpened] = useState(false)
 const [isNavOpen, setisNavOpen] = useState(false)
 
@@ -74,7 +79,7 @@ useEffect(() => {
 });
   const [dropDownOpened, setdropDownOpened] = useState(false);
   return (
-    <div className={isScrolling ? "w-full fixed z-20 bg-white text-black top-0 left-0" : "w-full fixed text-white z-20 top-0 left-0"}>
+    <div className={isScrolling ? "w-full fixed z-20 overflow-y-auto bg-white text-black top-0 left-0" : "w-full fixed text-white z-20 top-0 left-0"}>
       <div className="w-full z-10 py-2 gap-5 flex items-center justify-between">
         <div className="pl-2 w-full flex items-center gap-2.5 md:w-min md:pl-8">
           <h1>Pixabay</h1>
@@ -244,13 +249,128 @@ useEffect(() => {
 
       </div>
         {/* Mobile Navbar Code Starts */}
-        <div className={isNavOpen ? "w-full z-30 h-[70vh] text-black bg-white fixed top-0 left-0 transition-all duration-700" : "w-full transition-all duration-700 z-30 h-[70vh] top-[-100%] bg-white fixed"}>
-        <div className="pl-2 pt-2 md:pl-8">
-          <h1 className="text-xl font-bold">Pixabay</h1>
+        <div className={isNavOpen ? "w-full z-30 overflow-y-auto h-screen text-[#CECED2] bg-[#191B26] fixed top-0 left-0 transition-all duration-700" : "w-full transition-all h-[93vh] duration-700 z-30 overflow-y-auto top-[-100%] bg-[#191B26] fixed"}>
+       {
+        isNavOpen &&  <div className="pl-2 transition-all duration-700 fixed top-0 left-0 bg-[#191B26] z-20 pt-2 w-full border-b-[1px] pb-5 border-b-[#4c4c4d] md:pl-8">
+        <h1 className="text-xl font-bold mt-1">Pixabay</h1>
+      <div onClick={()=>{
+        setisNavOpen(false)
+        setAboutUsLinksOpen(false)
+        setCommunityLinksOpen(false)
+        setDiscoverLinksOpen(false)
+        setMediaLinksOpen(false)
+      }
+    }  className="text-[#CECED2] absolute top-3 p-2 right-3 cursor-pointer hover:bg-white/10 hover:rounded-full md:hidden">
+      <AiOutlineClose className="" />
+      </div>
         </div>
-           <div onClick={()=>setisNavOpen(false)}  className="text-black absolute top-4 p-2 right-2 cursor-pointer hover:bg-black/10 hover:rounded-full md:hidden">
-           <AiOutlineClose className="" />
-           </div>
+       }
+        
+        <div className="w-full overflow-y-auto mt-20 px-5">
+        <button className="bg-[#00AB6B] text-white flex w-full justify-center items-center gap-1 px-2 py-1.5 rounded-full">
+              <GrFormUpload size={25} />
+              Upload
+        </button>
+        {/* Links */}
+        {/* Media */}
+        <div className={`mt-5 w-full relative ${!mediaLinksOpen && 'hover:border-b-0 h-max border-b-[1px] border-b-[#4c4c4d]'}`}>
+          <div onClick={()=>setMediaLinksOpen(!mediaLinksOpen)} className="flex items-center w-full hover:bg-white/20 py-2 px-2 rounded-md cursor-pointer justify-between">
+          <h1>Media</h1>
+          <span className={mediaLinksOpen?'transition-all duration-300 rotate-180':'rotate-0 transition-all duration-300'}>
+            <MdKeyboardArrowDown size={22}/>
+          </span>
+          </div>
+          {
+            mediaLinksOpen && <div className="w-full left-3 pr-7">
+            {
+              media.map((item,index)=>{
+                return(
+                  <Link key={index} className="flex text-sm items-center px-2 gap-3 rounded-md py-2.5 capitalize w-full hover:bg-white/20" href={item.linkUrl}>
+                  {item.icon}
+                  {item.linkUrl}
+                  </Link>
+                )
+              })
+            }
+            </div>
+          }
+        </div>
+        {/* Discover */}
+        <div className={`mt-5 w-full relative ${!discoverLinksOpen && 'hover:border-b-0 h-max border-b-[1px] border-b-[#4c4c4d]'}`}>
+          <div onClick={()=>setDiscoverLinksOpen(!discoverLinksOpen)} className="flex items-center w-full hover:bg-white/20 py-2 px-2 rounded-md cursor-pointer justify-between">
+          <h1>Discover</h1>
+          <span className={discoverLinksOpen?'transition-all duration-300 rotate-180':'rotate-0 transition-all duration-300'}>
+            <MdKeyboardArrowDown size={22}/>
+          </span>
+          </div>
+          {
+            discoverLinksOpen && <div className="w-full left-3 pr-7">
+            {
+              discover.map((item,index)=>{
+                return(
+                  <Link key={index} className="flex text-sm items-center px-2 gap-3 rounded-md py-2.5 capitalize w-full hover:bg-white/20" href={item.linkUrl}>
+                  {item.icon}
+                  {item.linkUrl}
+                  </Link>
+                )
+              })
+            }
+            </div>
+          }
+        </div>
+        {/* Community */}
+        <div className={`mt-5 w-full relative ${!communityLinksOpen && 'hover:border-b-0 h-max border-b-[1px] border-b-[#4c4c4d]'}`}>
+          <div onClick={()=>setCommunityLinksOpen(!communityLinksOpen)} className="flex items-center w-full hover:bg-white/20 py-2 px-2 rounded-md cursor-pointer justify-between">
+          <h1>Community</h1>
+          <span className={communityLinksOpen?'transition-all duration-300 rotate-180':'rotate-0 transition-all duration-300'}>
+            <MdKeyboardArrowDown size={22}/>
+          </span>
+          </div>
+          {
+            communityLinksOpen && <div className="w-full left-3 pr-7">
+            {
+              community.map((item,index)=>{
+                return(
+                  <Link key={index} className="flex text-sm items-center px-2 gap-3 rounded-md py-2.5 capitalize w-full hover:bg-white/20" href={item.linkUrl}>
+                  {item.icon}
+                  {item.linkUrl}
+                  </Link>
+                )
+              })
+            }
+            </div>
+          }
+        </div>
+        {/* About Us */}
+        <div className={`mt-5 w-full relative ${!aboutUsLinksOpen && 'hover:border-b-0 h-max border-b-[1px] border-b-[#4c4c4d]'}`}>
+          <div onClick={()=>setAboutUsLinksOpen(!aboutUsLinksOpen)} className="flex items-center w-full hover:bg-white/20 py-2 px-2 rounded-md cursor-pointer justify-between">
+          <h1>Discover</h1>
+          <span className={aboutUsLinksOpen?'transition-all duration-300 rotate-180':'rotate-0 transition-all duration-300'}>
+            <MdKeyboardArrowDown size={22}/>
+          </span>
+          </div>
+          {
+            aboutUsLinksOpen && <div className="w-full left-3 pr-7">
+            {
+              about.map((item,index)=>{
+                return(
+                  <Link key={index} className="flex text-sm items-center px-2 gap-3 rounded-md py-2.5 capitalize w-full hover:bg-white/20" href={item.linkUrl}>
+                  {item.icon}
+                  {item.linkUrl}
+                  </Link>
+                )
+              })
+            }
+            </div>
+          }
+        </div>
+        <div className="mt-5 min-w-full flex items-center gap-4 text-sm pb-32">
+          <FaFacebook/>
+          <FaTwitter/>
+          <FaInstagram/>
+          <FaPinterest/>
+        </div>
+        </div>
         </div>
     </div>
   );

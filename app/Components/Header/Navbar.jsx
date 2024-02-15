@@ -78,7 +78,46 @@ useEffect(() => {
       <div className="w-full z-10 py-2 gap-5 flex items-center justify-between">
         <div className="pl-2 w-full flex items-center gap-2.5 md:w-min md:pl-8">
           <h1>Pixabay</h1>
-          
+          {/* Mobile SearchBar Code Start */}
+          {
+            isScrolling && <div onClick={()=>setMobileSearchBarOpened(true)} className="cursor-pointer hover:bg-white/20 p-2 hover:rounded-full md:hidden" >
+            <CiSearch size={19}/>
+          </div>
+          }
+         {
+          mobileSearchBarOpened &&  <div className={mobileSearchBarOpened ? 'w-full py-2 md:hidden text-black bg-white z-50 fixed top-0 left-0 transition-all duration-500' : 'w-full py-4 text-black bg-white z-50 fixed top-[-100%] left-0 transition-all duration-500'}>
+          <div className="w-full flex items-center px-4 gap-4 justify-between">
+          <div className="w-full md:hidden bg-gray-100 flex rounded-full px-1 items-center gap-1">
+              <CiSearch size={26} className="font-bold"/>
+              <input type="text" placeholder="Search Pixabay" className="bg-transparent py-2 px-2 w-full outline-none focus:outline-none rounded-full" />
+              <div className={`relative flex items-center gap-0.5 cursor-pointer hover:bg-white/50 px-3 py-1.5 rounded-full`}>
+                <h1 className="flex items-center w-max gap-0 capitalize text-sm" onClick={()=>setSearchDropDown(!searchDropDown)}>{searchItem} <MdKeyboardArrowDown size={21}/> </h1>
+               {
+                searchDropDown &&  <div className="absolute w-max top-11 z-10 right-0 text-gray-600  bg-white py-1 shadow-md shadow-[#484848] rounded-lg">
+                {
+                  searchTags.map((item,index)=>{
+                    return(
+                      <li  onClick={()=>{
+                        setSearchItem(item.linkUrl)
+                        setSearchDropDown(false)
+                      }} key={index} className="flex px-4 py-2 hover:bg-gray-300 items-center gap-2">
+                        <span>{item.icon}</span>
+                        <span>{item.linkUrl}</span>
+                      </li>
+                    )
+                  })
+                }
+              </div>
+               }
+              </div>
+          </div>
+          <div onClick={()=>setMobileSearchBarOpened(false)} className="cursor-pointer hover:bg-black/20 p-2 hover:rounded-full" >
+            <AiOutlineClose/>
+          </div>
+          </div>
+        </div>
+         }
+          {/* Mobile SearchBar Code Ends */}
         </div>
         {/* Mobile Account Options */}
         <div className="md:hidden flex items-center gap-3 pr-2">
@@ -204,15 +243,14 @@ useEffect(() => {
         {/* Desktop Navbar Code Ends */}
 
         {/* Mobile Navbar Code Starts */}
-        <div className={isNavOpen ? "w-full h-screen text-black bg-white fixed top-0 left-0 transition-all duration-700" : "w-full transition-all duration-700 h-screen top-[-100%] bg-white fixed"}>
+        {/* <div className={isNavOpen ? "w-full h-screen text-black bg-white fixed top-0 left-0 transition-all duration-700" : "w-full transition-all duration-700 h-screen top-[-100%] bg-white fixed"}>
         <div className="pl-2 pt-2 md:pl-8">
           <h1 className="text-xl font-bold">Pixabay</h1>
         </div>
            <div onClick={()=>setisNavOpen(false)}  className="text-black absolute top-4 p-2 right-2 cursor-pointer hover:bg-black/10 hover:rounded-full md:hidden">
            <AiOutlineClose className="" />
            </div>
-        </div>
-
+        </div> */}
       </div>
     </div>
   );

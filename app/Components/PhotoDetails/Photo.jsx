@@ -12,6 +12,8 @@ import { AiOutlineClose, AiOutlineUserAdd } from "react-icons/ai";
 import { BiSolidComment } from "react-icons/bi";
 import { BsFillHeartFill } from "react-icons/bs";
 import { SlBadge } from "react-icons/sl";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 const famousSearches = [
   { title: "nature", linkUrl: "/nature" },
@@ -193,6 +195,7 @@ const Photo = ({ id }) => {
                   <CiHeart size={20} />
                   <span>120</span>
                 </div>
+
                 {/* Save */}
                 <div className="flex h-9 w-16 items-center border-[1px] rounded-lg gap-2 justify-center">
                   <FaBookmark size={13} />
@@ -225,7 +228,9 @@ const Photo = ({ id }) => {
                   }
                 >
                   <div className="flex items-center justify-between border-b-[1px] border-b-gray-300 py-3">
-                    <h1>Mdeia Details</h1>
+                    <h1 className="text-base font-bold tracking-wide font-sans">
+                      Media Details
+                    </h1>
                     <div
                       onClick={() => setMobileDetialsOpen(false)}
                       className="p-1.5 hover:bg-gray-100 cursor-pointer rounded-full"
@@ -414,23 +419,39 @@ const Photo = ({ id }) => {
           {/* Like, Save, Comment and Share Buttons */}
           <div className="flex w-full mt-4 items-center justify-center gap-2">
             {/* Like */}
-            <div className="flex h-9 w-[75px] items-center border-[1px] rounded-lg gap-2 justify-center">
+            <div className="flex h-9 w-[75px] cursor-pointer like items-center border-[1px] rounded-lg gap-2 justify-center">
               <CiHeart size={20} />
               <span>120</span>
             </div>
             {/* Save */}
-            <div className="flex h-9 w-20 items-center border-[1px] rounded-lg gap-2 justify-center">
+            <div className="flex h-9 save w-20 cursor-pointer items-center border-[1px] rounded-lg gap-2 justify-center">
               <FaBookmark size={13} />
               <span>20</span>
             </div>
             {/* Comment */}
-            <div className="flex h-9 w-10 items-center border-[1px] rounded-lg gap-2 justify-center">
+            <div className="flex h-9 comment cursor-pointer w-10 items-center border-[1px] rounded-lg gap-2 justify-center">
               <TfiComment size={14} />
             </div>
             {/* Share */}
-            <div className="flex h-9 w-10 items-center border-[1px] rounded-lg gap-2 justify-center">
+            <div className="flex h-9 w-10 share cursor-pointer items-center border-[1px] rounded-lg gap-2 justify-center">
               <IoMdShare size={20} />
             </div>
+            {/* Share Tooltip */}
+            <ReactTooltip anchorSelect=".share" place="bottom">
+              Share
+            </ReactTooltip>
+            {/* Like Tooltip */}
+            <ReactTooltip anchorSelect=".like" place="bottom">
+              Like
+            </ReactTooltip>
+            {/* Comment Tooltip */}
+            <ReactTooltip anchorSelect=".comment" place="bottom">
+              Comment
+            </ReactTooltip>
+            {/* Save To Collection Tooltip */}
+            <ReactTooltip anchorSelect=".save" place="bottom">
+              Save
+            </ReactTooltip>
           </div>
           {/* Views, Downloads and Details */}
           <div className="flex flex-col border-b-[1px] border-b-gray-300 gap-[7px] text-xs text-gray-500 py-5">

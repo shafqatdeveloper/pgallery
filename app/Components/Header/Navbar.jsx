@@ -9,6 +9,7 @@ import { IoVideocam,IoFlame } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 
 
@@ -71,6 +72,8 @@ const [aboutUsLinksOpen, setAboutUsLinksOpen] = useState(false)
 const [mobileSearchBarOpened, setMobileSearchBarOpened] = useState(false)
 const [isNavOpen, setisNavOpen] = useState(false)
 
+const pathName = usePathname()
+
 
 useEffect(() => {
       window.addEventListener("scroll", () => {
@@ -79,10 +82,11 @@ useEffect(() => {
 });
   const [dropDownOpened, setdropDownOpened] = useState(false);
   return (
-    <div className={isScrolling ? "w-full fixed z-20 bg-white text-black top-0 left-0" : "w-full fixed text-white z-20 top-0 left-0"}>
+    <div className={pathName==="/" ? (isScrolling ? `w-full fixed z-20 bg-white text-black top-0 left-0` : `w-full  fixed text-white z-20 top-0 left-0`) : `w-full bg-white text-black top-0 left-0`}>
       <div className="w-full z-10 py-2 gap-5 flex items-center justify-between">
         <div className="pl-2 w-full flex items-center gap-2.5 md:w-min md:pl-8">
-          <h1>Pixabay</h1>
+          <Link href={'/'}>
+          <h1>Pixabay</h1></Link>
           {/* Mobile SearchBar Code Start */}
           {
             isScrolling && <div onClick={()=>setMobileSearchBarOpened(true)} className="cursor-pointer hover:bg-white/20 p-2 hover:rounded-full md:hidden" >
@@ -138,8 +142,9 @@ useEffect(() => {
           </div>
         </div>
         {/* Desktop Navbar Code Start */}
+        {/* Search Bar for Home Page */}
         {
-            isScrolling && <div className="w-full hidden bg-gray-200 md:flex rounded-full px-2 items-center gap-1">
+            isScrolling && pathName==='/' &&   <div className="w-full hidden bg-gray-200 md:flex rounded-full px-2 items-center gap-1">
                 <CiSearch size={21} className="font-bold"/>
                 <input type="text" placeholder="Search Pixabay" className="bg-transparent py-2 px-2 w-full outline-none focus:outline-none rounded-full" />
                 <div className={`relative flex items-center gap-0.5 cursor-pointer hover:bg-white/50 px-3 py-1.5 rounded-full`}>
@@ -164,6 +169,34 @@ useEffect(() => {
                 </div>
             </div>
         }
+        {/* Search Page for All Pages other than Home Page */}
+        {
+            pathName !== '/' &&  <div className="w-full hidden bg-gray-200 md:flex rounded-full px-2 items-center gap-1">
+                <CiSearch size={21} className="font-bold"/>
+                <input type="text" placeholder="Search Pixabay" className="bg-transparent py-2 px-2 w-full outline-none focus:outline-none rounded-full" />
+                <div className={`relative flex items-center gap-0.5 cursor-pointer hover:bg-white/50 px-3 py-1.5 rounded-full`}>
+                  <h1 className="flex items-center w-max gap-0 capitalize text-sm" onClick={()=>setSearchDropDown(!searchDropDown)}>{searchItem} <MdKeyboardArrowDown size={21}/> </h1>
+                 {
+                  searchDropDown &&  <div className="absolute w-max top-11 z-10 right-0 text-gray-600  bg-white py-1 shadow-md shadow-[#484848] rounded-lg">
+                  {
+                    searchTags.map((item,index)=>{
+                      return(
+                        <li  onClick={()=>{
+                          setSearchItem(item.linkUrl)
+                          setSearchDropDown(false)
+                        }} key={index} className="flex px-4 py-2 hover:bg-gray-300 items-center gap-2">
+                          <span>{item.icon}</span>
+                          <span>{item.linkUrl}</span>
+                        </li>
+                      )
+                    })
+                  }
+                </div>
+                 }
+                </div>
+            </div>
+        }
+        {/* Desktop Options */}
         <div className="hidden md:flex items-center gap-8 pr-3 sm:pr-8">
           <div
             onClick={() => setdropDownOpened(!dropDownOpened)}
@@ -234,6 +267,7 @@ useEffect(() => {
               </div>
             )}
           </div>
+          {/* Desktop Account Options */}
           <div className="flex items-center gap-3">
             <button>Login</button>
             <button className="bg-white/50 flex items-center gap-1 px-3 py-1.5 rounded-full">

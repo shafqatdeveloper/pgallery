@@ -74,8 +74,12 @@ const Photos = () => {
       };
 
 
-      const likeImage = (index)=>{
-        console.log(index)
+      const likeImageHandle = (index)=>{
+        console.log("Image Liked with Index : ",index)
+      }
+
+      const addToCollectionImageHandler = (index)=>{
+        console.log("Image Added to Collection with Index : ",index)
       }
 
   return (
@@ -154,19 +158,22 @@ const Photos = () => {
                 return(
             <div key={index}  onMouseEnter={() => handleImageHover(index)} onMouseLeave={() => setImageHoverStates(Array(photosSample.length).fill(false))}
             className={'relative cursor-pointer'}>
+           
            <img src={item.picUrl} alt="" className={imageHoverStates[index] ? 'hovered':''}/>
            {
-            imageHoverStates[index] && <div className='absolute left-0 top-0 w-full h-full bg-black/40'>
-
+            imageHoverStates[index] &&
+            <Link href={`/pages/photos/${index}`}>
+             <div className='absolute left-0 top-0 w-full h-full bg-black/40'>             
             </div>
+            </Link>
            }
            {
             imageHoverStates[index] && <div className='z-10 text-white'>
             <div className='absolute flex items-center gap-3 left-5 top-5'>
-                <span className='bg-white/40 p-1 rounded-md border-[1.5px] border-gray-300 cursor-pointer hover:border-white'>
+                <span onClick={()=>addToCollectionImageHandler(index)} className='bg-white/40 p-1 rounded-md border-[1.5px] border-gray-300 cursor-pointer hover:border-white'>
                 <IoBookmark size={18} />
                 </span>
-                <span onClick={()=>likeImage(index)} className='bg-white/40 p-1 rounded-md border-[1.5px] border-gray-300 cursor-pointer hover:border-white'>
+                <span onClick={()=>likeImageHandle(index)} className='bg-white/40 p-1 rounded-md border-[1.5px] border-gray-300 cursor-pointer hover:border-white'>
                 <BsFillHeartFill size={18} />
                 </span>
             </div>

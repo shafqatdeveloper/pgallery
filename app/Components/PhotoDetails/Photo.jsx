@@ -342,18 +342,20 @@ const Photo = ({ id }) => {
                 }
                 className={"relative cursor-pointer"}
               >
-                <img
-                  src={item.picUrl}
-                  alt=""
-                  className={imageHoverStates[index] ? "hovered" : ""}
-                />
+                <Link href={`/pages/photos/${index}`}>
+                  <img
+                    src={item.picUrl}
+                    alt=""
+                    className={imageHoverStates[index] ? "hovered" : ""}
+                  />
+                </Link>
                 {imageHoverStates[index] && (
                   <Link href={`/pages/photos/${index}`}>
-                    <div className="absolute left-0 top-0 w-full h-full bg-black/40"></div>
+                    <div className="md:absolute hidden left-0 top-0 w-full h-full bg-black/40"></div>
                   </Link>
                 )}
                 {imageHoverStates[index] && (
-                  <div className="z-10 text-white">
+                  <div className="z-10 hidden md:block text-white">
                     <div className="absolute flex items-center gap-3 left-5 top-5">
                       <span
                         onClick={() => addToCollectionImageHandler(index)}

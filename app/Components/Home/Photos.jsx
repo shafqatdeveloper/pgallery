@@ -183,7 +183,7 @@ const Photos = () => {
           <div className="relative">
             <div
               onClick={() => setSearchOptionOpened(!searchOptionOpened)}
-              className="flex capitalize items-center gap-1 w-max border-[1px] border-gray-400 cursor-pointer text-gray-600 rounded-[8px] px-2 py-0.5"
+              className="flex capitalize items-center gap-1 w-max bg-[#F1883D] cursor-pointer text-white rounded-[8px] px-2 py-0.5"
             >
               <span>{searchOption}</span>
               <span>{<MdKeyboardArrowDown size={17} />}</span>

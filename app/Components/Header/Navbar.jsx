@@ -2,11 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { MdKeyboardArrowDown, MdOutlineLanguage } from "react-icons/md";
 import { GrFormUpload } from "react-icons/gr";
+import Modal from "react-modal";
 import {
   FaCamera,
   FaFacebook,
   FaInstagram,
   FaPinterest,
+  FaTimes,
   FaTwitter,
   FaUserAlt,
 } from "react-icons/fa";
@@ -17,6 +19,7 @@ import { CiSearch } from "react-icons/ci";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import LoginSignup from "../Account/LoginSignup/LoginSignup";
 
 const media = [
   { linkUrl: "photos", icon: <FaCamera /> },
@@ -75,10 +78,10 @@ const Navbar = () => {
   const [communityLinksOpen, setCommunityLinksOpen] = useState(false);
   const [aboutUsLinksOpen, setAboutUsLinksOpen] = useState(false);
   const [mobileSearchBarOpened, setMobileSearchBarOpened] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [isNavOpen, setisNavOpen] = useState(false);
 
   const pathName = usePathname();
-
   useEffect(() => {
     window.addEventListener("scroll", () => {
       window.scrollY > 30 ? setIsScrolling(true) : setIsScrolling(false);
@@ -95,13 +98,27 @@ const Navbar = () => {
           : `w-full bg-white text-black top-0 left-0`
       }
     >
+      {loginModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 z-30 rounded-sm flex items-center justify-center">
+          <div className="w-full md:w-[40%] rounded-sm flex flex-col">
+            <FaTimes
+              onClick={() => setLoginModalOpen(false)}
+              className={`place-self-end mt-[-5px] ${
+                isScrolling ? "text-black" : "text-white"
+              } cursor-pointer`}
+              size={24}
+            />
+            <LoginSignup />
+          </div>
+        </div>
+      )}
       <div className="w-full z-10 py-2 gap-5 flex items-center justify-between">
         <div className="pl-2 w-full flex items-center gap-2.5 md:w-min md:pl-8">
           <Link
             href={"/"}
             className={`${
               isScrolling
-                ? "text-white bg-[#F1883D] py-1.5 rounded-full px-2"
+                ? "text-white bg-violet-700 py-1.5 rounded-full px-2"
                 : "text-white py-1.5 rounded-full px-2"
             }`}
           >
@@ -318,7 +335,7 @@ const Navbar = () => {
                           >
                             {item.linkUrl}
                             {item.linkUrl === "pixabay radio" && (
-                              <span className="text-xs uppercase bg-[#00AB6B] px-1 py-0.5 rounded-sm tracking-wide">
+                              <span className="text-xs uppercase bg-violet-700 px-1 py-0.5 rounded-sm tracking-wide">
                                 new
                               </span>
                             )}
@@ -357,17 +374,22 @@ const Navbar = () => {
             )}
           </div>
           {/* Desktop Account Options */}
+
           <div className="flex items-center gap-3">
-            <button>Login</button>
-            <button className="bg-white/50 flex items-center gap-1 px-3 py-1.5 rounded-full">
+            <button onClick={() => setLoginModalOpen(true)}>Login</button>
+            <button
+              onClick={() => setLoginModalOpen(true)}
+              className="bg-white/50 flex items-center gap-1 px-3 py-1.5 rounded-full"
+            >
               Join
             </button>
-            <button className="bg-[#f1883d] text-white flex items-center gap-1 px-2 py-1.5 rounded-full">
+            <button className="bg-violet-700 text-white flex items-center gap-1 px-2 py-1.5 rounded-full">
               <GrFormUpload size={25} />
               Upload
             </button>
           </div>
         </div>
+
         {/* Desktop Navbar Code Ends */}
       </div>
       {/* Mobile Navbar Code Starts */}

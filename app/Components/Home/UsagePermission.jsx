@@ -5,8 +5,8 @@ import { BsFillHeartFill } from "react-icons/bs";
 const UsagePermission = () => {
   return (
     <div className="flex items-start justify-center gap-3 border-b-[1px] border-b-gray-300">
-      <div className="sm:mt-1 bg-[#ffe5d2] p-2 rounded-full">
-        <BsFillHeartFill size={13} className="text-[#f1883d]" />
+      <div className="sm:mt-1 bg-violet-200 p-2 rounded-full">
+        <BsFillHeartFill size={13} className="text-violet-700" />
       </div>
       <div className="flex flex-col gap-3 pb-5">
         <h1 className="font-bold">Free media you can use anywhere</h1>
@@ -17,7 +17,7 @@ const UsagePermission = () => {
           asking for permission or giving credit to the artist - even for
           certain commercial purposes.
         </p>
-        <Link className="mt-6 text-[#f1883d] text-sm" href={"/services/terms"}>
+        <Link className="mt-6 text-violet-700 text-sm" href={"/services/terms"}>
           Learn more about our license
         </Link>
       </div>

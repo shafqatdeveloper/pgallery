@@ -71,7 +71,7 @@ const Footer = () => {
                   >
                     {item.linkUrl}
                     {item.linkUrl === "pixabay radio" && (
-                      <span className="text-xs text-white uppercase bg-[#f1883d] px-1 py-0.5 rounded-sm tracking-wide">
+                      <span className="text-xs text-white uppercase bg-violet-700 px-1 py-0.5 rounded-sm tracking-wide">
                         new
                       </span>
                     )}

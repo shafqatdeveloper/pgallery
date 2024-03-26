@@ -15,7 +15,7 @@ const HomePage = () => {
         <div className="absolute -z-10 top-0 left-0 h-full w-full">
           <img
             className="h-full w-full object-center"
-            src="https://res.cloudinary.com/daxuxn2ec/image/upload/v1707769424/night-photograph-2183637_1280_xq4dhd.jpg"
+            src="https://res.cloudinary.com/daxuxn2ec/image/upload/v1707767992/pexels-drift-shutterbug-2085998_wt2zqj.jpg"
             alt=""
           />
         </div>

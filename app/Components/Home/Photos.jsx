@@ -183,14 +183,14 @@ const Photos = () => {
           <div className="relative">
             <div
               onClick={() => setSearchOptionOpened(!searchOptionOpened)}
-              className="flex capitalize items-center gap-1 w-max bg-[#F1883D] cursor-pointer text-white rounded-[8px] px-2 py-0.5"
+              className="flex capitalize items-center gap-1 w-max bg-violet-700 cursor-pointer text-white rounded-[18px] px-2.5 py-1.5"
             >
               <span>{searchOption}</span>
               <span>{<MdKeyboardArrowDown size={17} />}</span>
             </div>
             {/* Opened Search Options Tab */}
             {searchOptionOpened && (
-              <div className="absolute right-0 top-8 w-48 sm:w-80 flex flex-col py-2 z-20 text-gray-500 capitalize bg-white shadow-md shadow-gray-500 rounded-md px-2">
+              <div className="absolute right-0 top-10 w-48 sm:w-80 flex flex-col py-2 z-20 text-gray-500 capitalize bg-white shadow-md shadow-gray-500 rounded-md px-2">
                 {searchOptions.map((item, index) => {
                   return (
                     <span
@@ -200,7 +200,7 @@ const Photos = () => {
                       }}
                       className={
                         searchOption === item.title
-                          ? "text-[#00AB6B] py-1 hover:bg-gray-100 hover:rounded-md px-1 cursor-pointer"
+                          ? "text-violet-700 py-1 hover:bg-gray-100 hover:rounded-md px-1 cursor-pointer"
                           : "py-1 hover:bg-gray-100 hover:rounded-md px-1 cursor-pointer"
                       }
                       key={index}

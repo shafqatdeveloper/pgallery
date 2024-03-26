@@ -52,7 +52,7 @@ const SinglePage = () => {
               href={item.linkUrl}
             >
               <span
-                className={item.linkUrl === pathName ? "text-[#f1883d]" : ""}
+                className={item.linkUrl === pathName ? "text-violet-700" : ""}
               >
                 {item.icon}
               </span>

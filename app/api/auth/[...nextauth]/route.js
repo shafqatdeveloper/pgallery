@@ -33,15 +33,6 @@ const Handler = NextAuth({
         }
       },
     }),
-    GoogleProvider({
-      clientId:
-        "633797344873-6ce10jll571od35iaf1a0plk2oooli29.apps.googleusercontent.com",
-      clientSecret: "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",
-    }),
-    FacebookProvider({
-      clientId: "239173995632111",
-      clientSecret: "f03d9dbcd9ca5208e849e83fd19de404",
-    }),
   ],
   // callbacks: {
   //   async session({ session, token }) {

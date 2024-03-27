@@ -52,14 +52,15 @@ export async function POST(Request) {
           password,
         });
       }else{
-        const newName = username + "profilepic" + path.extname(profilePic.name);
-        const profile = new File([profilePic], newName, {
-          type: profilePic.type,
-          lastModified: profilePic.lastModified,
-        });
-        const filePath = path.join(uploadsDir, newName);
-        await pump(profile.stream(), fs.createWriteStream(filePath));
-        const profileUrl = `${requestOrigin}/public/uploads/${profile.name}`;
+            // const newName = username + "profilepic" + path.extname(profilePic.name);
+        // const profile = new File([profilePic], newName, {
+        //   type: profilePic.type,
+        //   lastModified: profilePic.lastModified,
+        // });
+        // const filePath = path.join(profilePic, newName);
+        const filePath = `./${profilePic.name}`;
+        await pump(profilePic.stream(), fs.createWriteStream(filePath));
+        const profileUrl = `${requestOrigin}/${profilePic.name}`;
         await User.create({
           name,
           email,

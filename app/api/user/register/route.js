@@ -30,6 +30,14 @@ export async function POST(Request) {
     //     status: 201,
     //     statusText: "Success",
     //   });
+    const ensureUploadsDirExists = () => {
+      const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+      return uploadsDir;
+    };
+    const uploadsDir = ensureUploadsDirExists();
     if (checkUser) {
       return NextResponse.json("Username already exists", {
         status: 401,
@@ -49,7 +57,7 @@ export async function POST(Request) {
           type: profilePic.type,
           lastModified: profilePic.lastModified,
         });
-        const filePath = `${requestOrigin}/public/uploads/${profile.name}`;
+        const filePath = path.join(uploadsDir, newName);
         await pump(profile.stream(), fs.createWriteStream(filePath));
         const profileUrl = `${requestOrigin}/public/uploads/${profile.name}`;
         await User.create({

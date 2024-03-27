@@ -1,6 +1,4 @@
 import NextAuth from "next-auth/next";
-import FacebookProvider from "next-auth/providers/facebook";
-import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { headers } from "next/headers";
 

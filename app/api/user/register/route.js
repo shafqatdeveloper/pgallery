@@ -31,7 +31,7 @@ export async function POST(Request) {
         type: profilePic.type,
         lastModified: profilePic.lastModified,
       });
-      const filePath = `./public/uploads/${profile.name}`;
+      const filePath = `${requestOrigin}/public/uploads/${profile.name}`;
       await pump(profile.stream(), fs.createWriteStream(filePath));
       const profileUrl = `${requestOrigin}/public/uploads/${profile.name}`;
       await User.create({

@@ -20,9 +20,12 @@ const user = new mongoose.Schema({
     required: true,
   },
   profile: {
-    type: String,
-    default:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1688890416/PngItem_1300321_e7rn7n.png",
+    public_id:{
+      ttype:String
+    },
+    secure_url:{
+      type:String
+    }
   },
   passwordResetToken: String,
   passwordResetExpires: {

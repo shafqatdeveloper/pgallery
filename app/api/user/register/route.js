@@ -1,12 +1,11 @@
 import User from "@/Schemas/User/UserModel";
 import { connectToDb } from "@/Utils/Connection/Connection";
 import { NextResponse } from "next/server";
-import fs from "fs";
-import { pipeline } from "stream";
-import path from "path";
-import { promisify } from "util";
+import cloudinary from 'cloudinary'
 import { headers } from "next/headers";
-const pump = promisify(pipeline);
+
+
+
 
 export async function POST(Request) {
   try {
@@ -16,63 +15,37 @@ export async function POST(Request) {
     const username = formData.get("username");
     const password = formData.get("password");
     const profilePic = formData.get("profile");
+    // console.log(profilePic)
     await connectToDb();
     const headerList = headers();
     const requestOrigin = headerList.get("origin");
     const checkUser = await User.findOne({ username });
-    // await User.create({
-    //       name,
-    //       email,
-    //       username,
-    //       password,
-    //     });
-    //          return NextResponse.json("User Registered", {
-    //     status: 201,
-    //     statusText: "Success",
-    //   });
-    const ensureUploadsDirExists = () => {
-      const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-      if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir, { recursive: true });
-      }
-      return uploadsDir;
-    };
-    const uploadsDir = ensureUploadsDirExists();
     if (checkUser) {
       return NextResponse.json("Username already exists", {
         status: 401,
         statusText: "Forbidden",
       });
     } else {
-      if(profilePic === null){
-        await User.create({
-          name,
-          email,
-          username,
-          password,
+      if(profilePic){
+        cloudinary.config({
+          cloud_name: "dazatks2h",
+          api_key: "167819145183511",
+          api_secret: "zbPX8NC-1Qm6WNSRUSlRpU_DRhI",
         });
-      }else{
-            // const newName = username + "profilepic" + path.extname(profilePic.name);
-        // const profile = new File([profilePic], newName, {
-        //   type: profilePic.type,
-        //   lastModified: profilePic.lastModified,
-        // });
-        // const filePath = path.join(profilePic, newName);
-        const filePath = `./${profilePic.name}`;
-        await pump(profilePic.stream(), fs.createWriteStream(filePath));
-        const profileUrl = `${requestOrigin}/${profilePic.name}`;
+        const uploadedFile = await cloudinary.v2.uploader.upload(profilePic,{
+          folder:"profile"
+        })
         await User.create({
-          name,
-          email,
-          username,
-          password,
-          profile: profileUrl,
+          name,email,password,username,profile:{
+            public_id:uploadedFile
+          }
+        })
+      }else{
+        return NextResponse.json("User Registered", {
+          status: 201,
+          statusText: "Success",
         });
       }
-      return NextResponse.json("User Registered", {
-        status: 201,
-        statusText: "Success",
-      });
     }
   } catch (error) {
     console.log(error);

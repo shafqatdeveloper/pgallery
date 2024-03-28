@@ -12,10 +12,21 @@ const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [profielPic, setProfilePic] = useState(null);
-  console.log("Profile Picture", profielPic);
+
+
+  const handleProfilePic = async (e) => {
+    e.preventDefault()
+    const reader = new FileReader();
+    reader.onload = () => {
+      if(reader.readyState === 2){
+        setProfilePic(reader.result);
+      }
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  }
 
   const handleSignup = async (e) => {
-    console.log("Clicked");
+    // console.log("Clicked");
     e.preventDefault();
     const form = new FormData();
     form.append("name", name);
@@ -56,7 +67,7 @@ const Signup = () => {
                 Choose a file
               </label>
               <input
-                onChange={(e) => setProfilePic(e.target.files[0])}
+                onChange={(e) => handleProfilePic(e)}
                 name="profile"
                 id="file-input"
                 type="file"

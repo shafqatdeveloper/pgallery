@@ -13,17 +13,16 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [profielPic, setProfilePic] = useState(null);
 
-
   const handleProfilePic = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const reader = new FileReader();
     reader.onload = () => {
-      if(reader.readyState === 2){
+      if (reader.readyState === 2) {
         setProfilePic(reader.result);
       }
     };
     reader.readAsDataURL(e.target.files[0]);
-  }
+  };
 
   const handleSignup = async (e) => {
     // console.log("Clicked");
@@ -76,7 +75,7 @@ const Signup = () => {
             {profielPic && (
               <div className="w-12 h-12 border-[1px] border-violet-700 rounded-full">
                 <img
-                  src="http://localhost:3000/public/uploads/msrprofilepic.png"
+                  src={profielPic}
                   alt="selected"
                   accept=".jpeg .png .jpg"
                   className="w-12 h-12 object-center rounded-full"

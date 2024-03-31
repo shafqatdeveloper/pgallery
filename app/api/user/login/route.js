@@ -14,14 +14,13 @@ export async function POST(Request) {
       });
     } else {
       const validatePassword = await loggingInUser.comparePass(password);
-      //   console.log("Valid Pass", validatePassword);
       if (!validatePassword) {
         return NextResponse.json("Invalid Username or Password", {
           status: 401,
           statusText: "Forbidden",
         });
       } else {
-        return NextResponse.json("LoggedIn", {
+        return NextResponse.json(loggingInUser, {
           status: 200,
           statusText: "Success",
         });

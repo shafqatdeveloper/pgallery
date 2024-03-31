@@ -3,9 +3,38 @@ import React, { useState } from "react";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { signIn } from "next-auth/react";
+import Loader from "../../Loader/Loader";
+import { useAppDispatch } from "@/Libs/Hooks";
+import { closeModal } from "@/Libs/features/accountModal/modalSlice";
 
 const Login = () => {
   const [showPassword, setshowPassword] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const handleSubmit = async (e) => {
+    setLoading(true);
+    e.preventDefault();
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        username,
+        password,
+      });
+      if (res.status === 200) {
+        dispatch(closeModal());
+      } else {
+        alert(res.error);
+      }
+    } catch (error) {
+      alert("Request Error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="mt-5 w-full flex items-center justify-center flex-col">
       <div className="flex w-full flex-col items-center justify-center gap-2">
@@ -29,6 +58,8 @@ const Login = () => {
               <input
                 type="text"
                 name="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="p-1 px-2 outline-none focus:outline-none"
                 placeholder="john@gmail.com"
               />
@@ -44,6 +75,8 @@ const Login = () => {
                   className="p-1 px-2 outline-none focus:outline-none"
                   type={showPassword ? "password" : "text"}
                   name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="**********"
                 />
                 <span className="cursor-pointer">
@@ -57,8 +90,15 @@ const Login = () => {
               <h1 className="text-xs py-1 text-violet-700">Forgot Password?</h1>
             </div>
           </div>
-          <div className="w-full bg-violet-700 cursor-pointer text-white text-center rounded-full py-1.5">
-            <button>Login</button>
+          <div
+            onClick={(e) => handleSubmit(e)}
+            className={
+              loading
+                ? "w-full bg-violet-700 border-2 border-violet-700 cursor-pointer text-white text-center rounded-full py-1.5 flex itemsc justify-center"
+                : "w-full bg-violet-700 border-2 border-violet-700 cursor-pointer text-white text-center rounded-full py-1.5"
+            }
+          >
+            {loading ? <Loader /> : <button>Login</button>}
           </div>
         </form>
       </div>

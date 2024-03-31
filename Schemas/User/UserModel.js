@@ -20,12 +20,12 @@ const user = new mongoose.Schema({
     required: true,
   },
   profile: {
-    public_id:{
-      ttype:String
+    profile_public_id: {
+      type: String,
     },
-    secure_url:{
-      type:String
-    }
+    profile_secure_url: {
+      type: String,
+    },
   },
   passwordResetToken: String,
   passwordResetExpires: {

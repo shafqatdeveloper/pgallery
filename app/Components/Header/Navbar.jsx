@@ -20,6 +20,9 @@ import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LoginSignup from "../Account/LoginSignup/LoginSignup";
+import { useSession } from "next-auth/react";
+import { useAppDispatch, useAppSelector } from "@/Libs/Hooks";
+import { closeModal, openModal } from "@/Libs/features/accountModal/modalSlice";
 
 const media = [
   { linkUrl: "photos", icon: <FaCamera /> },
@@ -80,6 +83,7 @@ const Navbar = () => {
   const [mobileSearchBarOpened, setMobileSearchBarOpened] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [isNavOpen, setisNavOpen] = useState(false);
+  const dispatch = useAppDispatch();
 
   const pathName = usePathname();
   useEffect(() => {
@@ -88,6 +92,8 @@ const Navbar = () => {
     });
   });
   const [dropDownOpened, setdropDownOpened] = useState(false);
+  const { data: session } = useSession();
+  const { modalOpened } = useAppSelector((state) => state.accountModal);
   return (
     <div
       className={
@@ -98,11 +104,11 @@ const Navbar = () => {
           : `w-full bg-white text-black top-0 left-0`
       }
     >
-      {loginModalOpen && (
+      {modalOpened && (
         <div className="fixed inset-0 bg-black bg-opacity-30 z-30 rounded-sm flex items-center justify-center">
           <div className="w-full md:w-[40%] rounded-sm flex flex-col">
             <FaTimes
-              onClick={() => setLoginModalOpen(false)}
+              onClick={() => dispatch(closeModal())}
               className={`place-self-end mt-[-5px] ${
                 isScrolling ? "text-black" : "text-white"
               } cursor-pointer`}
@@ -122,7 +128,16 @@ const Navbar = () => {
                 : "text-white py-1.5 rounded-full px-2"
             }`}
           >
-            <h1 className="text-xl font-medium tracking-wider">PGallery</h1>
+            <h1
+              className={`text-2xl font-medium tracking-wider ${
+                pathName !== "/" &&
+                !isScrolling &&
+                "text-violet-700 font-bold font-sans"
+              } `}
+            >
+              {/* {session ? session.user.name : "PGALLERY"} */}
+              PAGLLERY
+            </h1>
           </Link>
           {/* Mobile SearchBar Code Start */}
           {isScrolling && (
@@ -376,17 +391,19 @@ const Navbar = () => {
           {/* Desktop Account Options */}
 
           <div className="flex items-center gap-3">
-            <button onClick={() => setLoginModalOpen(true)}>Login</button>
+            <button onClick={() => dispatch(openModal())}>Login</button>
             <button
-              onClick={() => setLoginModalOpen(true)}
+              onClick={() => dispatch(openModal())}
               className="bg-white/50 flex items-center gap-1 px-3 py-1.5 rounded-full"
             >
               Join
             </button>
-            <button className="bg-violet-700 text-white flex items-center gap-1 px-2 py-1.5 rounded-full">
-              <GrFormUpload size={25} />
-              Upload
-            </button>
+            <Link href={"/resources/upload"}>
+              <button className="bg-violet-700 text-white flex items-center gap-1 px-2 py-1.5 rounded-full">
+                <GrFormUpload size={25} />
+                Upload
+              </button>
+            </Link>
           </div>
         </div>
 

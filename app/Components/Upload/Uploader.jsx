@@ -20,6 +20,7 @@ import {
 
 const Uploader = () => {
   const [selectedFile, setselectedFile] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
   const [tags, setTags] = useState("");
   const [description, setDescription] = useState("");
   const [aiGenerated, setAiGenerated] = useState(false);
@@ -27,27 +28,29 @@ const Uploader = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [uploadError, setUploadError] = useState(null);
+  const [fileTypeCheck, setFileTypeCheck] = useState("");
+  const selectedFileType = String(fileTypeCheck.type).split("/")[0];
   const { data: session } = useSession();
   const loggedInUser = session?.user?._id;
-  console.log(loggedInUser);
+
   const handleFileInput = (e) => {
+    setFileTypeCheck(e.target.files[0]);
     e.preventDefault();
     const reader = new FileReader();
     reader.onload = () => {
       if (reader.readyState === 2) {
-        setselectedFile(reader.result);
+        setFilePreview(reader.result);
       }
-      reader.onerror = (error) => {
-        setUploadError(error);
-      };
     };
     reader.readAsDataURL(e.target.files[0]);
+    setselectedFile(e.target.files[0]);
   };
 
   const handleRemoveSelectedFile = () => {
     const confirmRemove = confirm("Are You sure to Remove the selected File?");
     if (confirmRemove) {
       setselectedFile(null);
+      setFilePreview(null);
     }
   };
 
@@ -57,6 +60,7 @@ const Uploader = () => {
     const form = new FormData();
     form.append("tags", tags);
     form.append("description", description);
+    form.append("fileType", selectedFileType);
     form.append("aiGenerated", aiGenerated);
     form.append("mediaFile", selectedFile);
     form.append("uploadedBy", loggedInUser);
@@ -68,6 +72,7 @@ const Uploader = () => {
     if (res.status === 200) {
       setTags("");
       setselectedFile(null);
+      setFilePreview(null);
       setDescription("");
       setAiGenerated(false);
       setSuccessMessage(response);
@@ -98,19 +103,41 @@ const Uploader = () => {
 
   return (
     <div className="w-full flex gap-3 flex-col sm:flex-row items-center justify-center my-5">
-      {selectedFile ? (
+      {filePreview ? (
         // If A file is Selected
-        <>
-          <div className="w-full flex border-[1px] items-center border-gray-500 rounded-md gap-3 sm:w-[65%]">
+        <div className="flex w-full flex-col gap-3 justify-center px-2 sm:px-4 md:px-0 items-center md:flex-row">
+          <div className="w-full flex flex-col md:flex-row py-4 md:py-0 border-[1px] items-center border-gray-500 rounded-md gap-3 md:w-[65%]">
             {/* Image Preview */}
-            <div className="w-2/4 sm:border-r-[1px] rounded-tl-md h-96 object-cover rounded-bl-md">
-              <img
-                src={selectedFile}
-                className="w-full rounded-tl-md h-full rounded-bl-md"
-              />
-            </div>
+            {(fileTypeCheck.type === "image/jpeg" ||
+              fileTypeCheck.type === "image/jpg" ||
+              fileTypeCheck.type === "image/png") && (
+              <div className="w-full px-2 sm:px-5 md:px-1 md:w-2/4 sm:border-r-[1px] rounded-tl-md h-96 object-cover rounded-bl-md">
+                <img
+                  src={filePreview}
+                  className="w-full rounded-tl-md h-full rounded-bl-md"
+                />
+              </div>
+            )}
+            {/* Audio Preview */}
+            {fileTypeCheck.type === "audio/mpeg" && (
+              <div className="w-full px-2 sm:px-5 md:px-1 md:w-2/4 sm:border-r-[1px] rounded-tl-md h-96 flex items-center justify-center object-cover rounded-bl-md">
+                <audio controls>
+                  <source src={filePreview} type="audio/mpeg" />
+                  Your browser does not support the audio tag.
+                </audio>
+              </div>
+            )}
+            {/* Video Preview */}
+            {fileTypeCheck.type === "video/mp4" && (
+              <div className="w-full px-2 sm:px-5 md:px-1 md:w-2/4 sm:border-r-[1px] rounded-tl-md h-96 flex items-center justify-center object-cover rounded-bl-md">
+                <video className="rounded-md h-full w-full" controls>
+                  <source src={filePreview} type={fileTypeCheck.type} />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            )}
             {/* Tags, Description and Ai Generated Options */}
-            <div className="w-2/4 flex flex-col gap-6 sm:gap-8">
+            <div className="w-full md:w-2/4 px-2 sm:px-5 flex flex-col gap-6 sm:gap-8">
               {/* Tags Input */}
               <div className="w-full flex flex-col gap-1">
                 <label
@@ -121,7 +148,7 @@ const Uploader = () => {
                   <CiCircleQuestion className="text-black" />
                   Enter tags in English
                 </label>
-                <div className="w-[90%] border-[1px] border-black rounded-md p-1">
+                <div className="w-full md:w-[90%] border-[1px] border-black rounded-md p-1">
                   <input
                     type="text"
                     value={tags}
@@ -141,7 +168,7 @@ const Uploader = () => {
                   <CiCircleQuestion className="text-black" />
                   Optional
                 </label>
-                <div className="w-[90%] border-[1px] border-black rounded-md p-1">
+                <div className="w-full md:w-[90%] border-[1px] border-black rounded-md p-1">
                   <input
                     type="text"
                     value={description}
@@ -152,7 +179,7 @@ const Uploader = () => {
                 </div>
               </div>
               {/* Ai Generated Checkbox */}
-              <div className="flex gap-2 items-center justify-start">
+              <div className="flex gap-2  items-center justify-start">
                 <input
                   className="p-4"
                   type="checkbox"
@@ -166,8 +193,9 @@ const Uploader = () => {
                   <CiCircleQuestion />
                 </span>
               </div>
+              {/* Submit Button */}
               <div className="w-full">
-                <div className="w-[90%] bg-violet-700 py-2 rounded-md flex items-center justify-center text-white font-bold font-sans">
+                <div className="w-full md:w-[90%] bg-violet-700 py-2 rounded-md flex items-center justify-center text-white font-bold font-sans">
                   {loading ? (
                     <Loader />
                   ) : (
@@ -183,12 +211,14 @@ const Uploader = () => {
               </div>
             </div>
           </div>
-          <MdDelete
-            className="text-red-500 cursor-pointer"
-            size={24}
-            onClick={handleRemoveSelectedFile}
-          />
-        </>
+          <div className="md:text-red-500 px-12 md:px-0 py-3 rounded-md md:py-0 bg-red-500 md:bg-transparent text-white cursor-pointer">
+            <MdDelete
+              className=""
+              size={24}
+              onClick={handleRemoveSelectedFile}
+            />
+          </div>
+        </div>
       ) : (
         // Select A File
         <div className="w-full flex flex-col items-center gap-5">

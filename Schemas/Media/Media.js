@@ -11,6 +11,7 @@ const mediaModel = new mongoose.Schema({
   downloads: { type: Number, default: 0 },
   saves: { type: Number, default: 0 },
   mediaType: { type: String, required: true },
+  fileType: { type: String, required: true },
   width: { type: String },
   height: { type: String },
   tags: [{ type: String, required: true }],

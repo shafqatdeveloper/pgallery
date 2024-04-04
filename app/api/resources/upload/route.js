@@ -5,41 +5,44 @@ import Media from "@/Schemas/Media/Media";
 export async function POST(Request) {
   try {
     const formData = await Request.formData();
-    const pic = formData.get("mediaFile");
     const uploadedBy = formData.get("uploadedBy");
+    const uploadedFile = formData.get("mediaFile");
     const tags = formData.get("tags");
+    const fileType = formData.get("fileType");
     const description = formData.get("description");
     const aiGenerated = formData.get("aiGenerated");
-    cloudinary.config({
-      cloud_name: "dazatks2h",
-      api_key: "167819145183511",
-      api_secret: "zbPX8NC-1Qm6WNSRUSlRpU_DRhI",
-    });
-    const uploadedFile = await cloudinary.v2.uploader.upload(pic, {
-      folder: "resources",
-    });
+    const form = new FormData();
+    form.append("file", uploadedFile);
+    form.append("upload_preset", "tbcln6wk");
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/dazatks2h/upload",
+      {
+        method: "POST",
+        body: form,
+      }
+    );
+    const response = await res.json();
+    console.log(response);
     await Media.create({
       imageUrl: {
-        file_public_id: uploadedFile.public_id,
-        file_secure_url: uploadedFile.secure_url,
+        file_public_id: response.public_id,
+        file_secure_url: response.secure_url,
       },
       uploadedBy,
-      mediaType: uploadedFile.resource_type,
+      mediaType: response.format,
       tags,
+      fileType,
       description,
       aiGenerated,
-      width:
-        uploadedFile.resource_type === "image" ? uploadedFile.width : undefined,
-      height:
-        uploadedFile.resource_type === "image"
-          ? uploadedFile.height
-          : undefined,
+      width: response.resource_type === "image" ? response.width : undefined,
+      height: response.resource_type === "image" ? response.height : undefined,
     });
     return NextResponse.json("Uploaded Successfully", {
       status: 200,
       statusText: "Success",
     });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(error.message, {
       status: 500,
       statusText: "Server Error",

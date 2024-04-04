@@ -41,7 +41,7 @@ const Footer = () => {
     <div className="w-full py-5">
       <div className="flex w-full flex-col gap-5 md:gap-0 md:flex-row md:items-center px-3 sm:px-6 justify-center md:justify-between">
         <div className="flex flex-col gap-5">
-          <h1 className="text-2xl font-bold">Pixabay</h1>
+          <h1 className="text-2xl font-bold">PGALLERY</h1>
           <p className="text-sm">
             Over 4.6 million+ high quality stock images, videos and music shared
             by our talented community.

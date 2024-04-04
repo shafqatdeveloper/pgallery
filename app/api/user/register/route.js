@@ -12,7 +12,6 @@ export async function POST(Request) {
     const username = formData.get("username");
     const password = formData.get("password");
     const profilePic = formData.get("profile");
-    // console.log(profilePic)
     await connectToDb();
     const headerList = headers();
     const requestOrigin = headerList.get("origin");
@@ -24,23 +23,25 @@ export async function POST(Request) {
       });
     } else {
       if (profilePic) {
-        cloudinary.config({
-          cloud_name: "dazatks2h",
-          api_key: "167819145183511",
-          api_secret: "zbPX8NC-1Qm6WNSRUSlRpU_DRhI",
-        });
-        const uploadedFile = await cloudinary.v2.uploader.upload(profilePic, {
-          folder: "profile",
-        });
-        console.log(uploadedFile);
+        const form = new FormData();
+        form.append("file", profilePic);
+        form.append("upload_preset", "tbcln6wk");
+        const res = await fetch(
+          "https://api.cloudinary.com/v1_1/dazatks2h/upload",
+          {
+            method: "POST",
+            body: form,
+          }
+        );
+        const response = await res.json();
         await User.create({
           name,
           email,
           password,
           username,
           profile: {
-            profile_public_id: uploadedFile.public_id,
-            profile_secure_url: uploadedFile.secure_url,
+            profile_public_id: response.public_id,
+            profile_secure_url: response.secure_url,
           },
         });
         return NextResponse.json("User Registered", {

@@ -12,9 +12,10 @@ const Handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        // const headerList = headers();
-        // console.log("Cred", credentials);
-        const res = await fetch(`http://localhost:3000/api/user/login`, {
+        const headerList = headers();
+        // console.log(headerList.get("origin"));
+        const origin = headerList.get("origin");
+        const res = await fetch(`${origin}/api/user/login`, {
           method: "POST",
           "Content-Type": "application/json",
           body: JSON.stringify({

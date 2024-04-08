@@ -35,7 +35,6 @@ const Handler = NextAuth({
   ],
   callbacks: {
     async session({ session }) {
-      console.log("Session", session);
       const userExist = await User.findOne({ email: session.user.email });
       if (!userExist) {
         return null;
@@ -44,7 +43,6 @@ const Handler = NextAuth({
         delete objectWithoutPassword.password;
         delete objectWithoutPassword.validationToken;
         session.user = { ...objectWithoutPassword };
-        // console.log("Session Returned", session);
         return session;
       }
     },

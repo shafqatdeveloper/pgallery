@@ -32,7 +32,6 @@ const Uploader = () => {
   const selectedFileType = String(fileTypeCheck.type).split("/")[0];
   const { data: session } = useSession();
   const loggedInUser = session?.user?._id;
-
   const handleFileInput = (e) => {
     setFileTypeCheck(e.target.files[0]);
     e.preventDefault();
@@ -201,7 +200,9 @@ const Uploader = () => {
                   ) : (
                     <button
                       className="w-full"
-                      disabled={loading ? true : false}
+                      disabled={
+                        loading || !session || !session.user._id ? true : false
+                      }
                       onClick={(e) => handleFileUpload(e)}
                     >
                       Submit

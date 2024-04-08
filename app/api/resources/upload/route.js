@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import Media from "@/Schemas/Media/Media";
+import { getServerSession } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 
-export async function POST(Request) {
+export async function POST(Request, Response) {
   try {
     const formData = await Request.formData();
     const uploadedBy = formData.get("uploadedBy");

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import cloudinary from "cloudinary";
 import Media from "@/Schemas/Media/Media";
 
 export async function POST(Request) {
@@ -22,7 +21,6 @@ export async function POST(Request) {
       }
     );
     const response = await res.json();
-    console.log(response);
     await Media.create({
       imageUrl: {
         file_public_id: response.public_id,

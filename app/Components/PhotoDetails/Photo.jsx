@@ -14,6 +14,8 @@ import { BsFillHeartFill } from "react-icons/bs";
 import { SlBadge } from "react-icons/sl";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import PhotosSection from "./PhotosSection";
+import SkeletonBox from "../LoadingSkeleton/DetailsSkeleton/SinglePhotoSkeleton/Skeleton";
 
 const famousSearches = [
   { title: "nature", linkUrl: "/nature" },
@@ -28,95 +30,25 @@ const famousSearches = [
   { title: "iphone", linkUrl: "/iphone" },
 ];
 
-const photosSample = [
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941872/living-room-8557308_1920_ruglrw.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941872/maple-888807_1920_nz4fqc.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941870/balloon-991680_1920_kywec3.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941870/daisies-712892_1280_pwfhcw.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941869/cat-8540772_1920_chpbdt.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941868/heart-8545742_1280_y3qsdf.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941872/living-room-8557308_1920_ruglrw.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941872/maple-888807_1920_nz4fqc.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941870/balloon-991680_1920_kywec3.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941870/daisies-712892_1280_pwfhcw.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941869/cat-8540772_1920_chpbdt.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941868/heart-8545742_1280_y3qsdf.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941872/living-room-8557308_1920_ruglrw.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941872/maple-888807_1920_nz4fqc.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941870/balloon-991680_1920_kywec3.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941870/daisies-712892_1280_pwfhcw.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941869/cat-8540772_1920_chpbdt.jpg",
-  },
-  {
-    picUrl:
-      "https://res.cloudinary.com/daxuxn2ec/image/upload/v1707941868/heart-8545742_1280_y3qsdf.jpg",
-  },
-];
-
 const Photo = ({ id }) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const [mobileDetialsOpen, setMobileDetialsOpen] = useState(false);
-  const [imageHoverStates, setImageHoverStates] = useState(
-    Array(photosSample.length).fill(false)
-  );
+  const [isLaoding, setIsLaoding] = useState(false);
+  const [photo, setPhoto] = useState(null);
 
-  const handleImageHover = (index) => {
-    setImageHoverStates(() => Array(photosSample.length).fill(false));
-    setImageHoverStates((prevStates) =>
-      prevStates.map((state, i) => (i === index ? !state : state))
-    );
-  };
+  useEffect(() => {
+    const fetchPhoto = async () => {
+      setIsLaoding(true);
+      const res = await fetch(`/api/resources/get/single/image/${id}`);
+      const response = await res.json();
+      setPhoto(response);
+      setIsLaoding(false);
+    };
+    fetchPhoto();
+  }, []);
+
+  console.log(isLaoding);
 
   useEffect(() => {
     window.addEventListener("scroll", () => {
@@ -131,6 +63,15 @@ const Photo = ({ id }) => {
   const addToCollectionImageHandler = (index) => {
     console.log("Image Added to Collection with Index : ", index);
   };
+
+  const convertUrl = (url) => {
+    const baseUrl = " https://res.cloudinary.com/dazatks2h/image/upload/";
+    const attachmentFlag = "fl_attachment/";
+    const versionAndPublicId = url?.split("/image/upload/").pop();
+    return `${baseUrl}${attachmentFlag}${versionAndPublicId}`;
+  };
+
+  const convertedUrl = convertUrl(photo?.imageUrl?.file_secure_url);
 
   return (
     <div className="w-full md:mt-5 flex border-b-[1px] border-b-gray-300 pb-6 sm:pb-10 flex-col xmd:flex-row xmd:items-start xmd:justify-between gap-4">
@@ -152,35 +93,51 @@ const Photo = ({ id }) => {
           </div>
 
           {/* Button To Download */}
-          <div className="w-full border-b-[1px] border-b-gray-300 text-white px-1">
-            <button className="flex items-center gap-3 py-[5px] rounded-3xl bg-[#00AB6B] w-full justify-center">
+          <a
+            href={convertedUrl}
+            download
+            className="w-full border-b-[1px] border-b-gray-300 text-white px-1"
+          >
+            <button className="flex items-center gap-3 py-[5px] rounded-3xl  w-full justify-center">
               Download{" "}
               <span>
                 <MdKeyboardArrowDown size={20} />
               </span>
             </button>
-          </div>
+          </a>
         </div>
         {/* Fixed Button on Top for download while scrolling */}
         {isScrolling && (
-          <div className="w-full fixed top-0 xmd:hidden bg-[#efefef] py-3 z-20 border-b-[1px] border-b-gray-300 text-white px-1">
-            <button className="flex items-center gap-3 py-[5px] rounded-3xl bg-[#00AB6B] w-32 mx-auto justify-center">
+          <a
+            href={convertedUrl}
+            download
+            className="w-full fixed top-0 xmd:hidden bg-[#efefef] py-3 z-20 border-b-[1px] border-b-gray-300 text-white px-1"
+          >
+            <button className="flex items-center gap-3 py-[5px] rounded-3xl bg-[#6D28D9] w-32 mx-auto justify-center">
               Download{" "}
               <span>
                 <MdKeyboardArrowDown size={20} />
               </span>
             </button>
-          </div>
+          </a>
         )}
 
         {/* Image */}
-        <div className="w-full px-2 sm:px-5 md:px-8 xmd:px-0 h-60 sm:h-80 lg:h-96 flex items-center justify-center">
-          <img
-            src={photosSample[id].picUrl}
-            alt=""
-            className="w-full xmd:w-[65%] h-full object-cover "
-          />
-        </div>
+        {isLaoding ? (
+          <div className="w-full px-2 sm:px-5 md:px-8 xmd:px-0 h-60 sm:h-80 lg:h-96">
+            <div className="w-full mx-auto xmd:w-[65%] h-full">
+              <SkeletonBox />
+            </div>
+          </div>
+        ) : (
+          <div className="w-full px-2 sm:px-5 md:px-8 xmd:px-0 h-60 sm:h-80 lg:h-96 flex items-center justify-center">
+            <img
+              src={photo?.imageUrl?.file_secure_url}
+              alt=""
+              className="w-full xmd:w-[65%] h-full object-cover "
+            />
+          </div>
+        )}
         {/*  */}
 
         {/* Mobile Download, save, share and details section */}
@@ -193,13 +150,13 @@ const Photo = ({ id }) => {
                 {/* Like */}
                 <div className="flex h-9 w-16 items-center border-[1px] rounded-lg gap-2 justify-center">
                   <CiHeart size={20} />
-                  <span>120</span>
+                  <span>{photo?.likes}</span>
                 </div>
 
                 {/* Save */}
                 <div className="flex h-9 w-16 items-center border-[1px] rounded-lg gap-2 justify-center">
                   <FaBookmark size={13} />
-                  <span>20</span>
+                  <span>{photo?.saves}</span>
                 </div>
                 {/* Comment */}
                 <div className="flex h-9 w-10 items-center border-[1px] rounded-lg gap-2 justify-center">
@@ -240,40 +197,34 @@ const Photo = ({ id }) => {
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Views</span>
-                    <span>737</span>
+                    <span>{photo?.views}</span>
                   </div>
                   {/* Downloads */}
                   <div className="flex items-center justify-between">
                     <span>Downloads</span>
-                    <span>237</span>
+                    <span>{photo?.downloads}</span>
                   </div>
                   {/* Saves */}
                   <div className="flex items-center justify-between">
                     <span>Saves</span>
-                    <span>14</span>
+                    <span>{photo?.saves}</span>
                   </div>
-                  {/* Camera */}
-                  <div className="flex items-center justify-between">
-                    <span>Camera</span>
-                    <span className="flex items-center gap-0.5">
-                      <span>Nikon D3500</span>
-                      <PiWarningCircle />
-                    </span>
-                    {/* Media Type */}
-                  </div>
+                  {/* Media Type */}
                   <div className="flex items-center justify-between">
                     <span>Media type</span>
-                    <span>JPG</span>
+                    <span>{photo?.fileType}</span>
                   </div>
                   {/* Resolution */}
                   <div className="flex items-center justify-between">
                     <span>Resolution</span>
-                    <span>6000 x 4000</span>
+                    <span>
+                      {photo?.width} x {photo?.height}
+                    </span>
                   </div>
                   {/* Date */}
                   <div className="flex items-center justify-between">
                     <span>Publishes date</span>
-                    <span>Jan 31, 2024</span>
+                    <span>{String(photo?.createdAt).substring(0, 10)}</span>
                   </div>
                 </div>
               </div>
@@ -285,7 +236,10 @@ const Photo = ({ id }) => {
         {/* Comments */}
 
         <div className="pl-3 py-6 sm:py-10 sm:pl-8 md:pl-16 xmd:pl-20">
-          <span className="text-lg font-bold font-sans">9 Comments</span>
+          <span className="text-lg font-bold font-sans">
+            {photo?.comments?.length}{" "}
+          </span>
+          <span className="text-sm"> Comments</span>
         </div>
 
         {/* Not Logged In */}
@@ -293,7 +247,7 @@ const Photo = ({ id }) => {
           <div className="w-full sm:w-[90%] h-full bg-gray-100 rounded-lg flex flex-col items-center justify-center">
             {/* Icon */}
             <div className="w-full flex flex-col items-center gap-1 px-0 md:px-40  py-6">
-              <BiSolidComment size={14} className="text-[#00AB6B]" />
+              <BiSolidComment size={14} className="text-[#6D28D9]" />
               <span className="text-gray-600 w-max text-sm">
                 The community are waiting to hear from you!
               </span>
@@ -305,7 +259,7 @@ const Photo = ({ id }) => {
                 <div className="w-full py-0.5 border-[1px] border-gray-300 rounded-2xl bg-white">
                   <button className="w-full py-0.5">Login</button>
                 </div>
-                <div className="w-full py-0.5 rounded-2xl bg-[#00AB6B]">
+                <div className="w-full py-0.5 rounded-2xl bg-[#6D28D9]">
                   <button className="w-full py-0.5 text-[#ffffff]">Join</button>
                 </div>
               </div>
@@ -331,58 +285,8 @@ const Photo = ({ id }) => {
 
         {/* Photos */}
 
-        <div className="columns-1 sm:w-[94%] lg:columns-3 space-y-5 px-l sm:pl-8 py-4 sm:py-8">
-          {photosSample.map((item, index) => {
-            return (
-              <div
-                key={index}
-                onMouseEnter={() => handleImageHover(index)}
-                onMouseLeave={() =>
-                  setImageHoverStates(Array(photosSample.length).fill(false))
-                }
-                className={"relative cursor-pointer"}
-              >
-                <Link href={`/pages/photos/${index}`}>
-                  <img
-                    src={item.picUrl}
-                    alt=""
-                    className={imageHoverStates[index] ? "hovered" : ""}
-                  />
-                </Link>
-                {imageHoverStates[index] && (
-                  <Link href={`/pages/photos/${index}`}>
-                    <div className="md:absolute hidden left-0 top-0 w-full h-full bg-black/40"></div>
-                  </Link>
-                )}
-                {imageHoverStates[index] && (
-                  <div className="z-10 hidden md:block text-white">
-                    <div className="absolute flex items-center gap-3 left-5 top-5">
-                      <span
-                        onClick={() => addToCollectionImageHandler(index)}
-                        className="bg-white/40 p-1 rounded-md border-[1.5px] border-gray-300 cursor-pointer hover:border-white"
-                      >
-                        <IoBookmark size={18} />
-                      </span>
-                      <span
-                        onClick={() => likeImageHandle(index)}
-                        className="bg-white/40 p-1 rounded-md border-[1.5px] border-gray-300 cursor-pointer hover:border-white"
-                      >
-                        <BsFillHeartFill size={18} />
-                      </span>
-                    </div>
-                    <div className="absolute cursor-pointer text-gray-200 hover:text-white top-5 right-5">
-                      <SlBadge size={21} />
-                    </div>
-                    <div className="absolute flex gap-2 text-sm text-gray-300 items-center left-5 bottom-5">
-                      <Link href={"/"}>heart</Link>
-                      <Link href={"/"}>love</Link>
-                      <Link href={"/"}>cat</Link>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+        <div className="">
+          <PhotosSection />
         </div>
 
         {/* Load More Photos Button */}
@@ -409,26 +313,30 @@ const Photo = ({ id }) => {
               </span>
             </p>
           </div>
-          {/* Button T0 Download */}
-          <div className="w-full my-3 border-b-[1px] border-b-gray-300 text-white py-4 px-1">
-            <button className="flex items-center gap-3 py-[5px] rounded-3xl bg-[#00AB6B] w-full justify-center">
+          {/* Button To Download */}
+          <a
+            href={convertedUrl}
+            download
+            className="w-full my-3 border-b-[1px] border-b-gray-300 text-white py-4 px-1"
+          >
+            <button className="flex items-center gap-3 py-[5px] rounded-3xl bg-[#6D28D9] w-full justify-center">
               Download{" "}
               <span>
                 <MdKeyboardArrowDown />
               </span>
             </button>
-          </div>
+          </a>
           {/* Like, Save, Comment and Share Buttons */}
           <div className="flex w-full mt-4 items-center justify-center gap-2">
             {/* Like */}
             <div className="flex h-9 w-[75px] cursor-pointer like items-center border-[1px] rounded-lg gap-2 justify-center">
               <CiHeart size={20} />
-              <span>120</span>
+              <span>{photo?.likes}</span>
             </div>
             {/* Save */}
             <div className="flex h-9 save w-20 cursor-pointer items-center border-[1px] rounded-lg gap-2 justify-center">
               <FaBookmark size={13} />
-              <span>20</span>
+              <span>{photo?.saves}</span>
             </div>
             {/* Comment */}
             <div className="flex h-9 comment cursor-pointer w-10 items-center border-[1px] rounded-lg gap-2 justify-center">
@@ -460,12 +368,12 @@ const Photo = ({ id }) => {
             {/* Views */}
             <div className="flex items-center justify-between">
               <span>Views</span>
-              <span>737</span>
+              <span>{photo?.views}</span>
             </div>
             {/* Downloads */}
             <div className="flex items-center justify-between">
               <span>Downloads</span>
-              <span>237</span>
+              <span>{photo?.downloads}</span>
             </div>
             {/* Other Details */}
             <div className="flex flex-col gap-[7px]">
@@ -487,30 +395,23 @@ const Photo = ({ id }) => {
                   {/* Saves */}
                   <div className="flex items-center justify-between">
                     <span>Saves</span>
-                    <span>14</span>
-                  </div>
-                  {/* Camera */}
-                  <div className="flex items-center justify-between">
-                    <span>Camera</span>
-                    <span className="flex items-center gap-0.5">
-                      <span>Nikon D3500</span>
-                      <PiWarningCircle />
-                    </span>
-                    {/* Media Type */}
+                    <span>{photo?.saves}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Media type</span>
-                    <span>JPG</span>
+                    <span>{photo?.fileType}</span>
                   </div>
                   {/* Resolution */}
                   <div className="flex items-center justify-between">
                     <span>Resolution</span>
-                    <span>6000 x 4000</span>
+                    <span>
+                      {photo?.width} x {photo?.height}
+                    </span>
                   </div>
                   {/* Date */}
                   <div className="flex items-center justify-between">
                     <span>Publishes date</span>
-                    <span>Jan 31, 2024</span>
+                    <span>{String(photo?.createdAt).substring(0, 10)}</span>
                   </div>
                   <div
                     onClick={() => setDetailsOpen(false)}
@@ -530,7 +431,7 @@ const Photo = ({ id }) => {
             {/* User Details */}
             <div className="flex items-center gap-5">
               <img
-                src={photosSample[id].picUrl}
+                src={photo?.imageUrl?.file_secure_url}
                 className="w-10 h-10 rounded-full object-cover my-5"
                 alt=""
               />

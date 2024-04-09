@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { MdKeyboardArrowDown, MdOutlineLanguage } from "react-icons/md";
 import { GrFormUpload } from "react-icons/gr";
-import Modal from "react-modal";
 import {
   FaCamera,
   FaFacebook,
@@ -20,7 +19,7 @@ import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LoginSignup from "../Account/LoginSignup/LoginSignup";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useAppDispatch, useAppSelector } from "@/Libs/Hooks";
 import { closeModal, openModal } from "@/Libs/features/accountModal/modalSlice";
 
@@ -81,7 +80,6 @@ const Navbar = () => {
   const [communityLinksOpen, setCommunityLinksOpen] = useState(false);
   const [aboutUsLinksOpen, setAboutUsLinksOpen] = useState(false);
   const [mobileSearchBarOpened, setMobileSearchBarOpened] = useState(false);
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [isNavOpen, setisNavOpen] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -206,25 +204,40 @@ const Navbar = () => {
           {/* Mobile SearchBar Code Ends */}
         </div>
         {/* Mobile Account Options */}
-        <div className="md:hidden flex items-center gap-3 pr-2">
-          <div className="flex items-center gap-5">
-            <button>Login</button>
+        {session && session.user && session.user.name ? (
+          <div className="flex items-center gap-1 pr-1 md:hidden">
             <button
-              className={`flex ${
-                isScrolling ? "bg-black/10" : "bg-white/20"
-              } items-center gap-1 px-3 py-1.5 rounded-full`}
+              className="bg-red-500 text-sm text-white px-2 py-1 rounded-md"
+              onClick={() => signOut()}
             >
-              Join
+              Logout
             </button>
-            {/* Mobile Navbar Icon */}
-            <div
-              onClick={() => setisNavOpen(true)}
-              className="cursor-pointer hover:bg-white/20 p-3 hover:rounded-full"
-            >
-              <AiOutlineMenu />
+            <h1 className="text-sm">
+              {String(session?.user?.name).substring(0, 8)}
+            </h1>
+          </div>
+        ) : (
+          <div className="md:hidden flex items-center gap-3 pr-2">
+            <div className="flex items-center gap-5">
+              <button onClick={() => dispatch(openModal())}>Login</button>
+              <button
+                onClick={() => dispatch(openModal())}
+                className={`flex ${
+                  isScrolling ? "bg-black/10" : "bg-white/20"
+                } items-center gap-1 px-3 py-1.5 rounded-full`}
+              >
+                Join
+              </button>
+              {/* Mobile Navbar Icon */}
+              <div
+                onClick={() => setisNavOpen(true)}
+                className="cursor-pointer hover:bg-white/20 p-3 hover:rounded-full"
+              >
+                <AiOutlineMenu />
+              </div>
             </div>
           </div>
-        </div>
+        )}
         {/* Desktop Navbar Code Start */}
         {/* Search Bar for Home Page */}
         {isScrolling && pathName === "/" && (
@@ -390,21 +403,35 @@ const Navbar = () => {
           </div>
           {/* Desktop Account Options */}
 
-          <div className="flex items-center gap-3">
-            <button onClick={() => dispatch(openModal())}>Login</button>
-            <button
-              onClick={() => dispatch(openModal())}
-              className="bg-white/50 flex items-center gap-1 px-3 py-1.5 rounded-full"
-            >
-              Join
-            </button>
-            <Link href={"/resources/upload"}>
-              <button className="bg-violet-700 text-white flex items-center gap-1 px-2 py-1.5 rounded-full">
-                <GrFormUpload size={25} />
-                Upload
+          {session && session.user && session.user.name ? (
+            <div className="flex items-center gap-1 pr-1">
+              <button
+                className="bg-red-500 text-sm text-white px-2 py-1 rounded-md"
+                onClick={() => signOut()}
+              >
+                Logout
               </button>
-            </Link>
-          </div>
+              <h1 className="">
+                {String(session?.user?.name).substring(0, 8)}
+              </h1>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <button onClick={() => dispatch(openModal())}>Login</button>
+              <button
+                onClick={() => dispatch(openModal())}
+                className="bg-white/50 flex items-center gap-1 px-3 py-1.5 rounded-full"
+              >
+                Join
+              </button>
+              <Link href={"/resources/upload"}>
+                <button className="bg-violet-700 text-white flex items-center gap-1 px-2 py-1.5 rounded-full">
+                  <GrFormUpload size={25} />
+                  Upload
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Desktop Navbar Code Ends */}

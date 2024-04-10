@@ -17,10 +17,10 @@ export default function RootLayout({ children }) {
   return (
     <html suppressHydrationWarning lang="en">
       <body suppressHydrationWarning className={inter.className}>
+        <Toaster />
         <StoreProvider>
           <Provider>
             <Navbar />
-            <Toaster />
             {children}
             <Footer />
           </Provider>

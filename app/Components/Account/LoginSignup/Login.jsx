@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
@@ -7,12 +7,18 @@ import { signIn } from "next-auth/react";
 import Loader from "../../Loader/Loader";
 import { useAppDispatch } from "@/Libs/Hooks";
 import { closeModal } from "@/Libs/features/accountModal/modalSlice";
+import { FaRegCircleCheck } from "react-icons/fa6";
+import { IoIosCloseCircle } from "react-icons/io";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [showPassword, setshowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorOccured, setErrorOccured] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
   const dispatch = useAppDispatch();
   const handleSubmit = async (e) => {
     setLoading(true);
@@ -23,17 +29,39 @@ const Login = () => {
         username,
         password,
       });
+      console.log(res.status);
       if (res.status === 200) {
-        dispatch(closeModal());
+        console.log("Logged In");
+        setLoginSuccess(true);
       } else {
-        alert(res.error);
+        setErrorMessage(res.error);
+        setErrorOccured(true);
       }
     } catch (error) {
-      alert("Request Error");
+      setErrorOccured(true);
+      setErrorMessage(error.message);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (loginSuccess) {
+      toast("Authentication Successfull", {
+        icon: <FaRegCircleCheck size={20} className="text-green-500" />,
+        position: "top-right",
+      });
+      setLoginSuccess(false);
+      dispatch(closeModal());
+    } else if (errorOccured) {
+      toast(errorMessage, {
+        position: "top-right",
+        icon: <IoIosCloseCircle size={20} className="text-red-500" />,
+      });
+      setErrorOccured(false);
+      setErrorMessage(null);
+    }
+  }, [loginSuccess, errorMessage, errorOccured]);
 
   return (
     <div className="mt-5 w-full flex items-center justify-center flex-col">
@@ -60,7 +88,7 @@ const Login = () => {
                 name="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="p-1 px-2 outline-none focus:outline-none"
+                className="p-1 px-2 w-full bg-transparent outline-none focus:outline-none"
                 placeholder="john@gmail.com"
               />
             </div>
@@ -72,7 +100,7 @@ const Login = () => {
             <div className="w-full">
               <div className="w-full flex items-center justify-between border-[1px] p-1 px-2 rounded-lg">
                 <input
-                  className="p-1 px-2 outline-none focus:outline-none"
+                  className="p-1 px-2 w-full bg-transparent outline-none focus:outline-none"
                   type={showPassword ? "password" : "text"}
                   name="password"
                   value={password}

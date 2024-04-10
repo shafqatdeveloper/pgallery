@@ -2,6 +2,7 @@ import User from "@/Schemas/User/UserModel";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { headers } from "next/headers";
+import { NextResponse } from "next/server";
 
 const Handler = NextAuth({
   providers: [
@@ -23,12 +24,15 @@ const Handler = NextAuth({
             password: credentials?.password,
           }),
         });
-        const user = await res.json();
-        console.log("User in Next Auth", user);
-        if (user) {
-          return user;
+        const response = await res.json();
+        if (res.status === 200) {
+          return response;
         } else {
-          return null;
+          if (res.status === 401) {
+            throw new Error(response, { status: 401 });
+          } else {
+            throw new Error(response, { status: 501 });
+          }
         }
       },
     }),

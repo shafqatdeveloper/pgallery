@@ -6,16 +6,22 @@ import { FaBookmark, FaCheck } from "react-icons/fa";
 import { IoBookmark, IoCheckmarkOutline } from "react-icons/io5";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { TfiComment } from "react-icons/tfi";
-import { IoMdShare } from "react-icons/io";
+import { IoIosCloseCircle, IoMdHeartEmpty, IoMdShare } from "react-icons/io";
 import { PiWarningCircle } from "react-icons/pi";
 import { AiOutlineClose, AiOutlineUserAdd } from "react-icons/ai";
 import { BiSolidComment } from "react-icons/bi";
+import { IoMdHeart } from "react-icons/io";
 import { BsFillHeartFill } from "react-icons/bs";
 import { SlBadge } from "react-icons/sl";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import PhotosSection from "./PhotosSection";
 import SkeletonBox from "../LoadingSkeleton/DetailsSkeleton/SinglePhotoSkeleton/Skeleton";
+import { useSession } from "next-auth/react";
+import { FaRegCircleCheck } from "react-icons/fa6";
+import toast from "react-hot-toast";
+import { useAppDispatch } from "@/Libs/Hooks";
+import { openModal } from "@/Libs/features/accountModal/modalSlice";
 
 const famousSearches = [
   { title: "nature", linkUrl: "/nature" },
@@ -34,27 +40,63 @@ const Photo = ({ id }) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const [mobileDetialsOpen, setMobileDetialsOpen] = useState(false);
-  const [isLaoding, setIsLaoding] = useState(false);
+  const [isLaoding, setIsLaoding] = useState(true);
+  const [likePostMessage, setLikePostMessage] = useState(null);
+  const [likePostErrorMessage, setLikePostErrorMessage] = useState(null);
+  const [likePostError, setLikePostError] = useState(false);
+  const [likeChecker, setLikeChecker] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
   const [photo, setPhoto] = useState(null);
+
+  const { data: session } = useSession();
+  const dispatch = useAppDispatch();
+  const loggedInUser = session?.user?._id;
+
+  useEffect(() => {
+    const checkLikedOrNot = async () => {
+      const res = await fetch(`/api/resources/action/validate/like/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ loggedInUser: loggedInUser }),
+      });
+      const response = await res.json();
+      setLikeChecker(response);
+    };
+    checkLikedOrNot();
+  }, [session, isLiked]);
 
   useEffect(() => {
     const fetchPhoto = async () => {
-      setIsLaoding(true);
       const res = await fetch(`/api/resources/get/single/image/${id}`);
       const response = await res.json();
       setPhoto(response);
       setIsLaoding(false);
     };
     fetchPhoto();
-  }, []);
-
-  console.log(isLaoding);
+  }, [isLiked]);
 
   useEffect(() => {
     window.addEventListener("scroll", () => {
       window.scrollY > 175 ? setIsScrolling(true) : setIsScrolling(false);
     });
   });
+
+  useEffect(() => {
+    if (isLiked) {
+      toast(likePostMessage, {
+        icon: <FaRegCircleCheck size={20} className="text-green-500" />,
+        position: "top-right",
+      });
+      setIsLiked(false);
+      setLikePostMessage(null);
+    } else if (likePostError) {
+      toast(likePostErrorMessage, {
+        position: "top-right",
+        icon: <IoIosCloseCircle size={20} className="text-red-500" />,
+      });
+      setLikePostError(false);
+      setLikePostErrorMessage(null);
+    }
+  }, [likePostError, likePostErrorMessage, likePostMessage, isLiked]);
 
   const likeImageHandle = (index) => {
     console.log("Image Liked with Index : ", index);
@@ -69,6 +111,26 @@ const Photo = ({ id }) => {
     const attachmentFlag = "fl_attachment/";
     const versionAndPublicId = url?.split("/image/upload/").pop();
     return `${baseUrl}${attachmentFlag}${versionAndPublicId}`;
+  };
+
+  const likePostHandler = async (e, id) => {
+    if (!session?.user.name) {
+      dispatch(openModal());
+    } else {
+      e.preventDefault();
+      const res = await fetch(`/api/resources/action/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ loggedInUser: loggedInUser }),
+      });
+      const response = await res.json();
+      if (res.status == 200) {
+        setIsLiked(true);
+        setLikePostMessage(response);
+      } else {
+        setLikePostErrorMessage(response);
+        setLikePostError(true);
+      }
+    }
   };
 
   const convertedUrl = convertUrl(photo?.imageUrl?.file_secure_url);
@@ -107,20 +169,18 @@ const Photo = ({ id }) => {
           </a>
         </div>
         {/* Fixed Button on Top for download while scrolling */}
-        {isScrolling && (
-          <a
-            href={convertedUrl}
-            download
-            className="w-full fixed top-0 xmd:hidden bg-[#efefef] py-3 z-20 border-b-[1px] border-b-gray-300 text-white px-1"
-          >
-            <button className="flex items-center gap-3 py-[5px] rounded-3xl bg-[#6D28D9] w-32 mx-auto justify-center">
-              Download{" "}
-              <span>
-                <MdKeyboardArrowDown size={20} />
-              </span>
-            </button>
-          </a>
-        )}
+        <a
+          href={convertedUrl}
+          download
+          className="w-full xmd:hidden bg-[#efefef] py-3 z-20 border-b-[1px] border-b-gray-300 text-white px-1"
+        >
+          <button className="flex items-center gap-3 py-[5px] rounded-3xl bg-[#6D28D9] w-32 mx-auto justify-center">
+            Download{" "}
+            <span>
+              <MdKeyboardArrowDown size={20} />
+            </span>
+          </button>
+        </a>
 
         {/* Image */}
         {isLaoding ? (
@@ -148,8 +208,15 @@ const Photo = ({ id }) => {
             <div className="flex w-[90%] sm:w-4/5  mt-4 items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 {/* Like */}
-                <div className="flex h-9 w-16 items-center border-[1px] rounded-lg gap-2 justify-center">
-                  <CiHeart size={20} />
+                <div
+                  onClick={(e) => likePostHandler(e, id)}
+                  className="flex h-9 w-16 items-center border-[1px] rounded-lg gap-2 justify-center"
+                >
+                  {likeChecker && session?.user?.name ? (
+                    <IoMdHeart className="text-violet-700" size={20} />
+                  ) : (
+                    <IoMdHeartEmpty size={20} />
+                  )}
                   <span>{photo?.likes}</span>
                 </div>
 
@@ -285,7 +352,7 @@ const Photo = ({ id }) => {
 
         {/* Photos */}
 
-        <div className="">
+        <div className="px-1 sm:px-0">
           <PhotosSection />
         </div>
 
@@ -329,8 +396,15 @@ const Photo = ({ id }) => {
           {/* Like, Save, Comment and Share Buttons */}
           <div className="flex w-full mt-4 items-center justify-center gap-2">
             {/* Like */}
-            <div className="flex h-9 w-[75px] cursor-pointer like items-center border-[1px] rounded-lg gap-2 justify-center">
-              <CiHeart size={20} />
+            <div
+              onClick={(e) => likePostHandler(e, id)}
+              className="flex h-9 w-[75px] cursor-pointer like items-center border-[1px] rounded-lg gap-2 justify-center"
+            >
+              {likeChecker && session?.user?.name ? (
+                <IoMdHeart className="text-violet-700" size={20} />
+              ) : (
+                <IoMdHeartEmpty size={20} />
+              )}
               <span>{photo?.likes}</span>
             </div>
             {/* Save */}

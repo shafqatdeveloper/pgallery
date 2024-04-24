@@ -207,12 +207,12 @@ const Navbar = () => {
         {session && session.user && session.user.name ? (
           <div className="flex items-center gap-1 pr-1 md:hidden">
             <button
-              className="bg-red-500 text-sm text-white px-2 py-1 rounded-md"
+              className="bg-red-500 text-xs text-white px-2 py-1 rounded-md"
               onClick={() => signOut()}
             >
               Logout
             </button>
-            <h1 className="text-sm">
+            <h1 className="text-xs">
               {String(session?.user?.name).substring(0, 8)}
             </h1>
           </div>

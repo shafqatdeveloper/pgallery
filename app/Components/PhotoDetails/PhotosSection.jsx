@@ -5,6 +5,7 @@ import Link from "next/link";
 import { BsFillHeartFill } from "react-icons/bs";
 import { SlBadge } from "react-icons/sl";
 import { IoBookmark } from "react-icons/io5";
+import { useSession } from "next-auth/react";
 
 const PhotosSection = () => {
   const [isLaoding, setIsLaoding] = useState(false);

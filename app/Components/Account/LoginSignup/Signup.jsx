@@ -11,6 +11,7 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [profielPic, setProfilePic] = useState(null);
   const [profilePicPreview, setprofilePicPreview] = useState(null);
 
@@ -27,6 +28,7 @@ const Signup = () => {
   };
 
   const handleSignup = async (e) => {
+    setLoading(true);
     e.preventDefault();
     const form = new FormData();
     form.append("name", name);
@@ -39,6 +41,7 @@ const Signup = () => {
       body: form,
     });
     const response = await res.json();
+    setLoading(false);
     if (res.status === 200) {
       alert(response);
     } else {

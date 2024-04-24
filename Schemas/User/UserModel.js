@@ -31,6 +31,15 @@ const user = new mongoose.Schema({
   passwordResetExpires: {
     type: Date,
   },
+  likedPosts: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "mediaSchema",
+      },
+    ],
+    default: [],
+  },
   createdAt: {
     type: Date,
     default: new Date(),
